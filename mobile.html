@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Givery AI — VoiceIQ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;background:#F4F4F2;color:#1C1C1A;-webkit-text-size-adjust:100%;}
+
+:root{
+  --brand:#C60000;--brand-d:#A00000;
+  --b50:#E6F1FB;--b100:#B5D4F4;--b400:#378ADD;--b600:#185FA5;--b800:#0C447C;
+  --g50:#F5F5F3;--g100:#E9E9E6;--g200:#D0D0CC;--g400:#9C9C98;--g600:#636360;--g800:#3A3A38;--g900:#1C1C1A;
+  --t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t800:#085041;
+  --a50:#FAEEDA;--a100:#FAC775;--a400:#BA7517;--a600:#854F0B;
+  --gr50:#EAF3DE;--gr400:#639922;--gr600:#3B6D11;
+  --r50:#FCEBEB;--r400:#E24B4A;--r600:#A32D2D;
+  --pu50:#EEEDFE;--pu600:#534AB7;--pu800:#3C3489;
+  --word:#2B5797;--excel:#1D6F42;--ppt:#B7472A;
+  --surf:#fff;--surf2:#F5F5F3;--surf3:#EEEEEB;
+  --text1:#1C1C1A;--text2:#636360;--text3:#9C9C98;
+  --bdr:rgba(0,0,0,0.07);--bdr2:rgba(0,0,0,0.12);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+
+/* ── SHELL ── */
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;background:var(--surf2);}
+
+/* ── STATUS BAR FAKE ── */
+.status-bar{
+  height:44px;background:var(--g900);display:flex;align-items:center;
+  justify-content:space-between;padding:0 20px;flex-shrink:0;
+  /* chrome strip */
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.status-bar::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#666,#D0D0CE 30%,#A8A8A6 50%,#D0D0CE 70%,#666);
+}
+.status-time{font-size:13px;font-weight:500;color:#fff;}
+.status-icons{display:flex;align-items:center;gap:5px;}
+.status-icons svg{fill:#fff;opacity:.85;}
+
+/* ── TOP BAR ── */
+.topbar{
+  height:50px;background:var(--g900);display:flex;align-items:center;
+  padding:0 14px;gap:10px;flex-shrink:0;position:relative;
+}
+.topbar-logo{display:flex;align-items:center;gap:8px;}
+.logo-img{height:16px;filter:brightness(0) invert(1);}
+.logo-badge{font-size:8px;font-weight:500;padding:2px 5px;border-radius:3px;background:var(--brand);color:#fff;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+/* device chrome button */
+.chrome-btn{
+  width:22px;height:22px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#D0D0CE,#888);
+  border:1px solid #666;box-shadow:0 1px 3px rgba(0,0,0,.4);flex-shrink:0;
+}
+.topbar-status{
+  display:flex;align-items:center;gap:4px;font-size:9px;
+  color:rgba(255,255,255,.45);padding:3px 8px;
+  background:rgba(255,255,255,.06);border-radius:12px;
+}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--t400);}
+.topbar-avatar{
+  width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,var(--b600),var(--b800));
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:500;color:#fff;
+}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  display:flex;align-items:stretch;
+  background:var(--surf);border-top:1px solid var(--bdr);
+  flex-shrink:0;
+  padding-bottom:var(--safe-bottom);
+}
+.bn-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:8px 4px;border:none;background:none;cursor:pointer;
+  color:var(--text3);font-family:'DM Sans',sans-serif;font-size:9px;
+  transition:color .14s;position:relative;min-height:52px;
+}
+.bn-btn.active{color:var(--brand);}
+.bn-btn.active .bn-icon{color:var(--brand);}
+.bn-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;}
+.bn-badge{
+  position:absolute;top:6px;right:calc(50% - 16px);
+  font-size:8px;font-weight:500;padding:1px 4px;border-radius:8px;
+  background:var(--brand);color:#fff;
+}
+
+/* ── SCREENS ── */
+.screen{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.screen.active{display:flex;}
+
+/* ════════════════════════════
+   SCREEN 1: RECORDINGS
+════════════════════════════ */
+
+/* recording list (initial view) */
+.rec-list-screen{flex:1;overflow-y:auto;}
+.rec-list-header{
+  padding:12px 16px 6px;font-size:11px;font-weight:500;
+  color:var(--text3);text-transform:uppercase;letter-spacing:.06em;
+}
+.rec-card{
+  margin:0 12px 8px;background:var(--surf);border-radius:14px;
+  border:1px solid var(--bdr);overflow:hidden;cursor:pointer;
+  transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+.rec-card:active{transform:scale(.98);background:var(--surf2);}
+.rec-card.active-card{border-color:var(--brand);box-shadow:0 0 0 2px rgba(198,0,0,.1);}
+.rc-top{display:flex;align-items:center;gap:10px;padding:12px 14px 8px;}
+.rc-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--g200);flex-shrink:0;
+}
+.rc-dot.new{background:var(--brand);}
+.rc-title{font-size:14px;font-weight:500;color:var(--text1);flex:1;}
+.rc-dur{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+.rc-meta{display:flex;align-items:center;gap:8px;padding:0 14px 10px;}
+.rc-date{font-size:11px;color:var(--text3);}
+.rc-tag{font-size:9px;padding:2px 7px;border-radius:8px;background:var(--g100);color:var(--g600);}
+.rc-bottom{
+  display:flex;align-items:center;gap:6px;padding:8px 14px;
+  border-top:1px solid var(--bdr);background:var(--surf2);
+}
+.rc-terms{display:flex;gap:4px;flex-wrap:wrap;flex:1;}
+.rc-term{font-size:9px;padding:1px 6px;border-radius:8px;background:var(--b50);color:var(--b800);}
+.rc-term.new{background:var(--a50);color:var(--a600);}
+.rc-arrow{color:var(--text3);}
+
+/* detail view */
+.detail-view{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.detail-header{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  background:var(--surf);border-bottom:1px solid var(--bdr);flex-shrink:0;
+}
+.back-btn{
+  width:30px;height:30px;border-radius:50%;border:1px solid var(--bdr2);
+  background:var(--surf2);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+}
+.back-btn svg{width:14px;height:14px;stroke:var(--text2);fill:none;stroke-width:2;}
+.detail-title{font-size:14px;font-weight:500;color:var(--text1);flex:1;}
+.detail-tag{font-size:9px;padding:2px 7px;border-radius:8px;background:var(--g100);color:var(--g600);}
+
+/* segment tabs */
+.seg-tabs{
+  display:flex;background:var(--surf);padding:8px 14px;gap:6px;
+  border-bottom:1px solid var(--bdr);flex-shrink:0;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.seg-tabs::-webkit-scrollbar{display:none;}
+.seg-tab{
+  flex-shrink:0;padding:6px 12px;border-radius:8px;
+  border:1px solid var(--bdr2);background:var(--surf2);
+  font-size:11px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .12s;white-space:nowrap;
+}
+.seg-tab.active{background:var(--g900);color:#fff;border-color:var(--g900);}
+
+/* transcript in detail */
+.ts-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.ts-entry{
+  display:flex;gap:10px;padding:10px 14px;
+  border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .1s;
+}
+.ts-entry:active{background:var(--surf2);}
+.ts-entry.playing{background:#EEF5FF;}
+.ts-left{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:36px;flex-shrink:0;}
+.ts-time{font-size:9px;color:var(--b600);font-family:'DM Mono',monospace;font-weight:500;}
+.ts-play{
+  width:22px;height:22px;border-radius:50%;background:var(--b400);
+  display:flex;align-items:center;justify-content:center;border:none;flex-shrink:0;
+}
+.ts-play svg{width:8px;height:8px;fill:#fff;}
+.ts-right{flex:1;min-width:0;}
+.ts-speaker{font-size:9px;font-weight:500;color:var(--text3);margin-bottom:3px;}
+.ts-text{font-size:13px;color:var(--text1);line-height:1.65;}
+.ts-text mark{background:rgba(186,117,23,.15);color:var(--a600);padding:0 2px;border-radius:2px;font-weight:500;}
+
+/* audio player */
+.audio-bar{
+  background:var(--g900);padding:10px 14px;flex-shrink:0;
+  padding-bottom:calc(10px + var(--safe-bottom));
+}
+.ab-info{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ab-title{font-size:12px;font-weight:500;color:#fff;flex:1;}
+.ab-speaker{font-size:10px;color:rgba(255,255,255,.5);}
+.ab-controls{display:flex;align-items:center;gap:10px;}
+.ab-ctrl{
+  width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.1);border:none;cursor:pointer;
+}
+.ab-ctrl.primary{
+  width:44px;height:44px;
+  background:radial-gradient(circle at 40% 35%,#555,#222);
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+  border:1px solid #555;
+}
+.ab-ctrl svg{width:14px;height:14px;fill:rgba(255,255,255,.8);}
+.ab-ctrl.primary svg{width:16px;height:16px;fill:white;}
+.ab-waveform{flex:1;height:28px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;position:relative;cursor:pointer;}
+.ab-wf-fill{height:100%;background:rgba(55,138,221,.4);width:28%;position:relative;}
+.ab-wf-fill::after{content:'';position:absolute;right:-1px;top:0;bottom:0;width:2px;background:var(--b400);border-radius:1px;}
+.ab-wf-bars{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;gap:1px;padding:3px 6px;}
+.ab-bar{width:2px;border-radius:1px;background:rgba(55,138,221,.6);flex-shrink:0;}
+.ab-time{font-size:9px;font-family:'DM Mono',monospace;color:rgba(255,255,255,.4);}
+
+/* output view in detail */
+.out-scroll{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch;}
+.out-card{background:var(--surf);border-radius:14px;border:1px solid var(--bdr);overflow:hidden;margin-bottom:10px;}
+.oc-head{padding:10px 12px;border-bottom:1px solid var(--bdr);background:var(--surf2);}
+.oc-head-lbl{font-size:10px;font-weight:500;color:var(--text3);margin-bottom:6px;}
+.oc-type-pills{display:flex;gap:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.oc-type-pills::-webkit-scrollbar{display:none;}
+.oc-pill{
+  flex-shrink:0;font-size:10px;padding:4px 10px;border-radius:12px;
+  border:1px solid var(--bdr2);background:var(--surf);color:var(--text2);
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;
+}
+.oc-pill.active{background:var(--g900);color:#fff;border-color:var(--g900);}
+.oc-body{padding:12px;font-size:13px;color:var(--text1);line-height:1.75;}
+.oc-body h4{font-size:11px;font-weight:500;color:var(--text2);margin:10px 0 5px;}
+.oc-body h4:first-child{margin-top:0;}
+.oc-body ul{padding-left:16px;}
+.oc-body li{margin-bottom:5px;}
+.oc-body .kv{display:flex;gap:6px;margin-bottom:3px;font-size:12px;}
+.oc-body .kv dt{font-weight:500;color:var(--text2);min-width:56px;flex-shrink:0;}
+.oc-foot{display:flex;gap:6px;padding:10px 12px;border-top:1px solid var(--bdr);background:var(--surf2);}
+.oc-act{
+  flex:1;padding:8px;border-radius:8px;border:1px solid var(--bdr2);
+  background:var(--surf);font-family:'DM Sans',sans-serif;font-size:11px;
+  color:var(--text2);cursor:pointer;text-align:center;
+}
+.oc-act.primary{background:var(--b400);color:#fff;border-color:var(--b400);}
+
+/* doc generate section */
+.doc-gen-scroll{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch;}
+.doc-gen-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding:0 2px;}
+.doc-fmt-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.doc-fmt-card{
+  background:var(--surf);border-radius:14px;border:1px solid var(--bdr);
+  padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;
+  transition:all .15s;
+}
+.doc-fmt-card:active{transform:scale(.98);}
+.doc-fmt-card.selected{border-width:2px;}
+.doc-fmt-card.sel-w{border-color:var(--word);background:#EBF0F7;}
+.doc-fmt-card.sel-e{border-color:var(--excel);background:#E8F2EC;}
+.doc-fmt-card.sel-p{border-color:var(--ppt);background:#FAE9E5;}
+.dfc-icon{
+  width:44px;height:44px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;
+}
+.dfc-icon svg{width:22px;height:22px;fill:rgba(255,255,255,.9);}
+.dfc-info{flex:1;}
+.dfc-title{font-size:14px;font-weight:500;color:var(--text1);margin-bottom:2px;}
+.dfc-sub{font-size:11px;color:var(--text2);}
+.dfc-check{
+  width:22px;height:22px;border-radius:50%;border:2px solid var(--bdr2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.dfc-check.checked{background:var(--brand);border-color:var(--brand);}
+.dfc-check svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;}
+
+.doc-gen-btn{
+  width:100%;padding:16px;border-radius:14px;border:none;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .16s;margin-bottom:12px;
+}
+.doc-gen-btn:active{transform:scale(.97);}
+.doc-gen-btn svg{width:16px;height:16px;fill:rgba(255,255,255,.9);}
+
+/* doc preview card */
+.doc-preview-card{
+  background:var(--surf);border-radius:14px;border:1px solid var(--bdr);
+  overflow:hidden;
+}
+.dpc-header{padding:12px 14px;border-bottom:1px solid var(--bdr);}
+.dpc-title{font-size:13px;font-weight:500;color:var(--text1);margin-bottom:2px;}
+.dpc-meta{font-size:10px;color:var(--t600);display:flex;align-items:center;gap:5px;}
+.dpc-actions{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--bdr);background:var(--surf2);}
+.dpc-act{
+  flex:1;padding:10px;border-radius:10px;border:1px solid var(--bdr2);
+  font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text2);
+  cursor:pointer;text-align:center;background:var(--surf);
+}
+.dpc-act.primary{color:#fff;border:none;}
+
+/* gen overlay fullscreen */
+.gen-overlay{
+  position:fixed;inset:0;background:rgba(245,245,243,.96);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;z-index:500;
+}
+.gen-overlay.hidden{display:none;}
+.gen-spinner{
+  width:44px;height:44px;border-radius:50%;
+  border:3px solid var(--bdr2);animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gen-lbl{font-size:14px;font-weight:500;color:var(--text1);}
+.gen-steps{display:flex;flex-direction:column;gap:7px;width:260px;}
+.gstep{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--text3);}
+.gstep.done{color:var(--t600);}
+.gstep.act{color:var(--text1);font-weight:500;}
+.gsd{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--bdr2);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.gstep.done .gsd{background:var(--t400);border-color:var(--t400);}
+.gstep.act .gsd{background:var(--b400);border-color:var(--b400);animation:pd 1s infinite;}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.4}}
+.gstep.done .gsd::after{content:'✓';font-size:9px;color:#fff;font-weight:700;}
+.gstep.act .gsd::after{content:'';width:5px;height:5px;border-radius:50%;background:#fff;}
+
+/* ════════════════════════════
+   SCREEN 2: DICTIONARY
+════════════════════════════ */
+.dict-screen-inner{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.screen-header{
+  padding:12px 14px;background:var(--surf);border-bottom:1px solid var(--bdr);flex-shrink:0;
+}
+.sh-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.sh-title{font-size:17px;font-weight:500;color:var(--text1);}
+.sh-btn{
+  padding:6px 14px;border-radius:8px;border:none;
+  background:var(--brand);color:#fff;font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:500;cursor:pointer;
+}
+.sh-search{
+  width:100%;padding:9px 12px 9px 34px;border:1px solid var(--bdr2);
+  border-radius:10px;background:var(--surf2);font-family:'DM Sans',sans-serif;
+  font-size:13px;color:var(--text1);outline:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%239C9C98' stroke-width='2'%3E%3Ccircle cx='6' cy='6' r='4.5'/%3E%3Cpath d='m12 12-3-3'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:12px center;
+  margin-bottom:8px;
+}
+.scope-seg{
+  display:flex;background:var(--surf2);border-radius:9px;padding:3px;
+  border:1px solid var(--bdr);
+}
+.ss-btn{
+  flex:1;padding:6px;border-radius:7px;border:none;font-family:'DM Sans',sans-serif;
+  font-size:12px;cursor:pointer;background:transparent;color:var(--text2);transition:all .14s;
+}
+.ss-btn.active{background:var(--surf);color:var(--text1);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+
+.dict-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.dict-item{
+  margin:0 12px 8px;background:var(--surf);border-radius:12px;
+  border:1px solid var(--bdr);overflow:hidden;
+}
+.dict-item.new-item{border-color:var(--t100);}
+.di-top{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;}
+.di-word{font-size:14px;font-weight:500;color:var(--b800);}
+.di-new{font-size:9px;padding:2px 6px;border-radius:4px;background:var(--t50);color:var(--t600);font-weight:500;margin-left:4px;vertical-align:middle;}
+.di-cat{margin-left:auto;font-size:9px;padding:2px 8px;border-radius:10px;flex-shrink:0;}
+.di-def{font-size:12px;color:var(--text2);line-height:1.6;padding:0 14px 10px;}
+.di-foot{
+  display:flex;align-items:center;gap:8px;padding:8px 14px;
+  border-top:1px solid var(--bdr);background:var(--surf2);
+}
+.di-src{font-size:10px;color:var(--text3);flex:1;}
+.di-act{font-size:10px;padding:4px 10px;border-radius:6px;border:1px solid var(--bdr2);background:var(--surf);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.di-act.del{color:var(--r600);border-color:var(--r400);}
+
+/* ════════════════════════════
+   SCREEN 3: KNOWLEDGE
+════════════════════════════ */
+.kb-list{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch;}
+.kb-card{
+  background:var(--surf);border-radius:14px;border:1px solid var(--bdr);
+  overflow:hidden;margin-bottom:10px;
+}
+.kb-head{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--bdr);}
+.kb-type{font-size:9px;font-weight:500;padding:3px 8px;border-radius:4px;}
+.kb-type.insight{background:var(--a50);color:var(--a600);}
+.kb-type.process{background:var(--b50);color:var(--b800);}
+.kb-type.rule{background:var(--t50);color:var(--t800);}
+.kb-title{font-size:14px;font-weight:500;color:var(--text1);flex:1;}
+.kb-body-txt{padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.65;}
+.kb-foot{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;
+  border-top:1px solid var(--bdr);background:var(--surf2);
+}
+.kb-date{font-size:10px;color:var(--text3);flex:1;}
+.kb-scope{font-size:9px;padding:2px 7px;border-radius:4px;}
+.kb-scope.personal{background:var(--g100);color:var(--g600);}
+.kb-scope.org{background:var(--b50);color:var(--b800);}
+.kb-scope.pending{background:var(--a50);color:var(--a600);}
+.kb-btn{font-size:10px;padding:5px 10px;border-radius:7px;border:1px solid var(--bdr2);background:var(--surf);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.kb-btn.primary{background:var(--b400);color:#fff;border-color:var(--b400);}
+
+/* ════════════════════════════
+   SCREEN 4: ADMIN
+════════════════════════════ */
+.admin-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.admin-seg{
+  display:flex;gap:6px;padding:10px 12px;background:var(--surf);
+  border-bottom:1px solid var(--bdr);overflow-x:auto;flex-shrink:0;
+}
+.admin-seg::-webkit-scrollbar{display:none;}
+.as-btn{
+  flex-shrink:0;padding:6px 12px;border-radius:8px;border:1px solid var(--bdr2);
+  background:var(--surf2);font-size:11px;color:var(--text2);
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;white-space:nowrap;
+}
+.as-btn.active{background:var(--g900);color:#fff;border-color:var(--g900);}
+.as-btn .cnt{font-size:9px;padding:1px 5px;border-radius:7px;background:var(--brand);color:#fff;margin-left:4px;}
+
+.admin-section{padding:12px;}
+.admin-sec-title{
+  font-size:13px;font-weight:500;color:var(--text1);
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:0 2px;
+}
+.admin-count{font-size:10px;padding:1px 8px;border-radius:8px;background:var(--a50);color:var(--a600);font-weight:500;}
+
+.appr-card{
+  background:var(--surf);border-radius:14px;border:1px solid var(--bdr);
+  overflow:hidden;margin-bottom:10px;
+}
+.appr-head{display:flex;align-items:center;gap:7px;padding:10px 14px;border-bottom:1px solid var(--bdr);}
+.appr-type-badge{font-size:9px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--a50);color:var(--a600);}
+.appr-type-badge.kb{background:var(--t50);color:var(--t800);}
+.appr-type-badge.prompt{background:var(--b50);color:var(--b800);}
+.appr-user{font-size:10px;color:var(--text3);}
+.appr-date{font-size:9px;color:var(--text3);margin-left:auto;}
+.appr-body{padding:10px 14px;}
+.appr-name{font-size:14px;font-weight:500;color:var(--text1);margin-bottom:4px;}
+.appr-desc{font-size:12px;color:var(--text2);line-height:1.6;}
+.appr-acts{display:flex;gap:6px;padding:10px 14px;border-top:1px solid var(--bdr);background:var(--surf2);flex-wrap:wrap;}
+.appr-approve{
+  flex:1;padding:9px;border-radius:9px;border:none;
+  background:var(--t400);color:#fff;font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:500;cursor:pointer;min-width:120px;
+}
+.appr-reject{
+  padding:9px 12px;border-radius:9px;border:1px solid var(--bdr2);
+  background:var(--surf);font-family:'DM Sans',sans-serif;font-size:12px;
+  color:var(--text2);cursor:pointer;
+}
+.appr-done-lbl{font-size:12px;color:var(--t600);font-weight:500;padding:4px 0;}
+
+/* stats */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.stat-card{background:var(--surf);border-radius:12px;padding:12px;border:1px solid var(--bdr);}
+.stat-val{font-size:22px;font-weight:500;color:var(--text1);}
+.stat-lbl{font-size:10px;color:var(--text3);margin-top:1px;}
+.stat-chg{font-size:10px;color:var(--t400);margin-top:3px;}
+
+.bar-chart{background:var(--surf);border-radius:12px;border:1px solid var(--bdr);padding:12px;}
+.bar-chart-title{font-size:12px;font-weight:500;color:var(--text1);margin-bottom:10px;}
+.bc-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.bc-label{font-size:11px;color:var(--text2);width:52px;flex-shrink:0;text-align:right;}
+.bc-track{flex:1;height:14px;background:var(--surf2);border-radius:3px;overflow:hidden;border:1px solid var(--bdr);}
+.bc-fill{height:100%;border-radius:3px;}
+.bc-val{font-size:10px;color:var(--text1);min-width:26px;}
+
+/* prompt cards */
+.prompt-list{display:flex;flex-direction:column;gap:8px;}
+.prompt-card{background:var(--surf);border-radius:14px;border:1px solid var(--bdr);padding:14px;}
+.prompt-card.dashed{border-style:dashed;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;min-height:80px;cursor:pointer;}
+.pc-type{font-size:10px;font-weight:500;margin-bottom:4px;}
+.pc-title{font-size:14px;font-weight:500;color:var(--text1);margin-bottom:4px;}
+.pc-desc{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:10px;}
+.pc-acts{display:flex;gap:6px;}
+.pc-deploy{padding:8px 16px;border-radius:8px;border:none;background:var(--brand);color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+.pc-edit{padding:8px 12px;border-radius:8px;border:1px solid var(--bdr2);background:var(--surf);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text2);cursor:pointer;}
+
+/* ── OAUTH MODAL ── */
+.modal-wrap{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);
+  display:flex;align-items:flex-end;justify-content:center;z-index:600;
+  backdrop-filter:blur(4px);
+}
+.modal-wrap.hidden{display:none;}
+.modal{
+  background:var(--surf);border-radius:20px 20px 0 0;width:100%;
+  max-width:480px;overflow:hidden;
+  padding-bottom:var(--safe-bottom);
+}
+.modal-chrome{height:3px;background:linear-gradient(90deg,#666,#D0D0CE 30%,#A8A8A6 50%,#D0D0CE 70%,#666);}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:var(--g200);margin:10px auto 0;}
+.modal-head{
+  display:flex;align-items:center;gap:10px;padding:16px 20px;
+  border-bottom:1px solid var(--bdr);
+}
+.modal-ms-ico{
+  width:36px;height:36px;border-radius:9px;background:var(--g100);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.modal-title{font-size:15px;font-weight:500;color:var(--text1);}
+.modal-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.modal-body{padding:16px 20px;}
+.modal-account{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  background:var(--surf2);border-radius:12px;border:1px solid var(--bdr2);
+  margin-bottom:12px;cursor:pointer;
+}
+.modal-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--b600),var(--b800));
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:500;color:#fff;flex-shrink:0;
+}
+.modal-acc-name{font-size:13px;font-weight:500;color:var(--text1);}
+.modal-acc-email{font-size:11px;color:var(--text3);}
+.save-loc-row{
+  display:flex;align-items:center;padding:10px 12px;
+  background:var(--surf2);border-radius:10px;border:1px solid var(--bdr);
+  margin-bottom:12px;gap:8px;
+}
+.save-loc-lbl{font-size:11px;color:var(--text2);}
+.save-loc-opts{display:flex;gap:4px;margin-left:auto;}
+.sl-opt{
+  font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--bdr2);
+  background:var(--surf);cursor:pointer;color:var(--text2);font-family:'DM Sans',sans-serif;
+}
+.sl-opt.active{background:var(--b50);color:var(--b800);border-color:var(--b200);font-weight:500;}
+.modal-scope{font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.65;}
+.modal-scope strong{color:var(--text1);font-weight:500;}
+.modal-scope ul{padding-left:14px;margin-top:4px;}
+.modal-scope li{margin-bottom:3px;}
+.modal-actions{display:flex;gap:8px;}
+.modal-cancel,.modal-confirm{
+  flex:1;padding:14px;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;
+}
+.modal-cancel{background:var(--surf2);border:1px solid var(--bdr2);color:var(--text2);}
+.modal-confirm{background:#0078D4;color:#fff;border:none;}
+.modal-foot{font-size:9px;color:var(--text3);text-align:center;padding:10px 20px 0;}
+
+/* ── TOAST ── */
+.toast-wrap{
+  position:fixed;top:100px;left:50%;transform:translateX(-50%);
+  z-index:900;display:flex;flex-direction:column;gap:6px;
+  pointer-events:none;width:calc(100% - 32px);max-width:380px;
+}
+.toast{
+  display:flex;align-items:center;gap:8px;padding:12px 14px;
+  background:var(--g900);color:#fff;border-radius:12px;font-size:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.2);animation:slideDown .22s ease;
+  pointer-events:auto;
+}
+@keyframes slideDown{from{transform:translateY(-8px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.toast.ok{background:var(--t800);}
+.toast.tw{background:var(--word);}
+.toast.te{background:var(--excel);}
+.toast.tp{background:var(--ppt);}
+.toast-close{margin-left:auto;cursor:pointer;opacity:.6;background:none;border:none;color:#fff;font-size:16px;line-height:1;}
+
+/* ── UTIL ── */
+.hidden{display:none!important;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--g200);border-radius:6px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- STATUS BAR -->
+<div class="status-bar" style="position:relative;">
+  <span class="status-time">9:41</span>
+  <div class="status-icons">
+    <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="4" width="3" height="7" fill="white" opacity=".4"/><rect x="4" y="3" width="3" height="8" fill="white" opacity=".6"/><rect x="8" y="1" width="3" height="10" fill="white" opacity=".8"/><rect x="12" y="0" width="3" height="11" fill="white"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2.5C5.5 2.5 3.3 3.5 1.7 5.2L0 3.5C2.1 1.3 5 0 8 0s5.9 1.3 8 3.5L14.3 5.2C12.7 3.5 10.5 2.5 8 2.5z" fill="white"/><path d="M8 6.5C6.5 6.5 5.2 7.1 4.2 8.2L2.5 6.5C3.9 5.1 5.9 4.3 8 4.3s4.1.8 5.5 2.2L11.8 8.2C10.8 7.1 9.5 6.5 8 6.5z" fill="white"/><circle cx="8" cy="11" r="1.5" fill="white"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="22" height="10" rx="2" stroke="white" stroke-width="1" fill="none" opacity=".5"/><rect x="23" y="3.5" width="2" height="5" rx="1" fill="white" opacity=".4"/><rect x="1" y="2" width="17" height="8" rx="1" fill="white"/></svg>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <img class="logo-img" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iX+ODrOOCpOODpOODvF8yIiBkYXRhLW5hbWU9IuODrOOCpOODpOODvCAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5OTguODMgMjc1Ij4KICA8ZyBpZD0iX+ODrOOCpOODpOODvF8xLTIiIGRhdGEtbmFtZT0i44Os44Kk44Ok44O8IDEiPgogICAgPGc+CiAgICAgIDxnPgogICAgICAgIDxwYXRoIGQ9Ik03NzMuODUsNDcuNzVsLTgwLjg4LDIwNWg1Ny4yOWwxNy4zNC00OS4yNGg3Ny4yM2wxNi43Miw0OS4yNGg1OC43TDgyOS4zMywxLjY0bC01NS40OCw0Ni4xMVpNODI5LjUsMTU5LjZoLTQ2LjQ5bDIzLjYzLTY2LjU2LDIyLjg2LDY2LjU2WiIgc3R5bGU9ImZpbGw6ICNjNjAwMDA7Ii8+CiAgICAgICAgPHBvbHlnb24gcG9pbnRzPSI5NDIuNTMgNDguMzEgOTQyLjUzIDI1Mi43NiA5OTguODMgMjUyLjc2IDk5OC44MyAwIDk0Mi41MyA0OC4zMSIgc3R5bGU9ImZpbGw6ICNjNjAwMDA7Ii8+CiAgICAgIDwvZz4KICAgICAgPGc+CiAgICAgICAgPHBvbHlnb24gcG9pbnRzPSIxODAuMTkgOTIuODYgMTgwLjE5IDEyNy44IDIxNy40OCAxMDAuNzEgMjE3LjQ4IDYyLjIgMTgwLjE5IDkyLjg2IiBzdHlsZT0iZmlsbDogI2M2MDAwMDsiLz4KICAgICAgICA8Zz4KICAgICAgICAgIDxnPgogICAgICAgICAgICA8cGF0aCBkPSJNNTE1LjAyLDI2MS44MnYtNzAuODYuMDdjMC0xNy44MywxNC40Ni0zMi4yOSwzMi4yOS0zMi4yOSwyLjAxLDAsMy45Ny4xOSw1Ljg3LjU0di0zMS40MXMtMjkuNTctMS45NC0zOC4xNywxNC4xOXYtMTQuMjZoLTM3LjN2MTMwLjE4YzEyLjA5LDEuMzksMjQuMTMsMi4xNywzNi4xNCwzLjg0aDEuMTdaIiBzdHlsZT0iZmlsbDogIzIzMTgxNTsiLz4KICAgICAgICAgICAgPHBhdGggZD0iTTIxNy40OCwxMjcuOGgtMzcuMjl2MTI3LjM5YzEyLjM5LTEuMDMsMjQuODItMS45MSwzNy4yOS0yLjYzdi0xMjQuNzZaIiBzdHlsZT0iZmlsbDogIzIzMTgxNTsiLz4KICAgICAgICAgICAgPHBhdGggZD0iTTMwOC44OSwyNDkuOTRsNDAuNzQtMTIyLjE0aC0zNy41MWwtMjIuMDksNzEuMzEtMjIuMDItNzEuMzFoLTM5LjM0bDQxLjM2LDEyMi41OGMxMi4zLS4yOSwyNC42NC0uNDYsMzcuMDEtLjQ2LjYxLDAsMS4yMi4wMSwxLjg0LjAxWiIgc3R5bGU9ImZpbGw6ICMyMzE4MTU7Ii8+CiAgICAgICAgICA8L2c+CiAgICAgICAgICA8cGF0aCBkPSJNMTU5LjI4LDE0NC42M2wtLjU1LTEuMDRzLS43Mi0xLjMxLS43Mi0xLjMxbC03NC41Nyw1NC4xOGg0Ny4wNWwtLjUsMS43aC0uMDFjLTUuOTgsMTkuNDItMjQuMDQsMzMuNTQtNDUuNDIsMzMuNTQtMjYuMjUsMC00Ny41NC0yMS4yOC00Ny41NC00Ny41NHMyMS4yOC00Ny41NCw0Ny41NC00Ny41NGM5LjM1LDAsMTguMDUsMi43MSwyNS40LDcuMzdsMzEuMTctMjIuNjVjLTE0Ljk4LTEzLjUtMzQuODItMjEuNzMtNTYuNTgtMjEuNzNDMzcuODUsOTkuNjIsMCwxMzcuNDcsMCwxODQuMTdzMzcuODUsODQuNTUsODQuNTUsODQuNTUsODQuNTUtMzcuODUsODQuNTUtODQuNTVjMC0xNC4yOS0zLjU2LTI3LjczLTkuODItMzkuNTNaIiBzdHlsZT0iZmlsbDogIzIzMTgxNTsiLz4KICAgICAgICAgIDxwYXRoIGQ9Ik00NjguOTksMTkwLjA3YzAtMzQuNzMtMjguMTYtNjIuODgtNjIuODktNjIuODhzLTYyLjksMjguMTUtNjIuOSw2Mi44OCwyOC4xNiw2Mi45LDYyLjksNjIuOWMyNy4xNCwwLDUwLjI3LTE3LjE5LDU5LjA4LTQxLjI4aC0zNC4wOGMtNS44NSw4LjAyLTE0Ljg2LDEzLjE4LTI1LjAxLDEzLjE4LTE0LjA5LDAtMjYuMDQtOS45My0zMC4yOC0yMy43aDkyLjE4Yy42NC0zLjYuOTktNy4zMS45OS0xMS4wOVpNNDA2LjEsMTU1LjM1YzEzLjcyLDAsMjUuMzksOS40MywyOS45MSwyMi42NWgtNTkuODNjNC41Mi0xMy4yMiwxNi4xOS0yMi42NSwyOS45Mi0yMi42NVoiIHN0eWxlPSJmaWxsOiAjMjMxODE1OyIvPgogICAgICAgICAgPHBhdGggZD0iTTY5My41NywxMjcuOGgtNDIuNDdsLTI4Ljc1LDU2LjQ5LTI0LjM0LTU2LjQ5aC0zOC43MmwxOS40NCwzOS45OSwyMC4wNSw0MS4yNSwxLjk2LDQuMDNjLjc0LDIuMDgsMS4xNiw0LjMyLDEuMTYsNi42NSwwLDMuMzctLjg0LDYuNTUtMi4zMiw5LjMzLS4wNC4wOC0uMDguMTYtLjEyLjI0LTMuMzksNi4yLTkuOTcsMTAuNC0xNy41MywxMC40LTQuMjcsMC04LjIxLTEuMzUtMTEuNDYtMy42M3QwLDB2LS4wNXMtLjAzLjAyLS4wMy4wMmMwLDAsMCwwLS4wMSwwaDBzMCwwLDAsMHYuMDJsLTIyLjI2LDI2LjUyYzYuMzEsNS4zNSwxMy45MSw5LjIxLDIyLjI2LDExLjA5aDBjLjE3LjA0LjM0LjA3LjUyLjExLDMuNDEuNzMsNi45NCwxLjE0LDEwLjU2LDEuMTdoMGMuNTkuMDIsMS4xOC4wNiwxLjc4LjA2LDE4LjE5LDAsMzQuMjEtOS4zLDQzLjU3LTIzLjQsMS43Mi0yLjI0LDMuMDYtNC40NSw0LjAzLTYuNDZsNjIuNzEtMTE3LjM0WiIgc3R5bGU9ImZpbGw6ICMyMzE4MTU7Ii8+CiAgICAgICAgPC9nPgogICAgICA8L2c+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=" alt="Givery AI">
+    <span class="logo-badge">Enterprise</span>
+  </div>
+  <div class="topbar-right">
+    <div class="chrome-btn"></div>
+    <div class="topbar-status"><div class="sdot"></div>M365</div>
+    <div class="topbar-avatar">田中</div>
+  </div>
+</div>
+
+<!-- SCREENS -->
+
+<!-- ▸ SCREEN: RECORDINGS -->
+<div class="screen active" id="scrRec">
+  <!-- recording list view -->
+  <div id="recListView" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+    <div class="rec-list-screen">
+      <div class="rec-list-header">最近の録音</div>
+      <div id="recCards"></div>
+    </div>
+  </div>
+  <!-- detail view -->
+  <div id="recDetailView" class="detail-view hidden">
+    <div class="detail-header">
+      <button class="back-btn" onclick="showRecList()">
+        <svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg>
+      </button>
+      <span class="detail-title" id="detailTitle">Q3 戦略会議</span>
+      <span class="detail-tag" id="detailTag">営業部</span>
+    </div>
+    <div class="seg-tabs" id="detailTabs">
+      <button class="seg-tab active" onclick="setDetailTab('ts',this)">文字起こし</button>
+      <button class="seg-tab" onclick="setDetailTab('out',this)">テキスト出力</button>
+      <button class="seg-tab" onclick="setDetailTab('doc',this)">ドキュメント生成</button>
+      <button class="seg-tab" onclick="setDetailTab('terms',this)">用語・KB</button>
+    </div>
+
+    <!-- ts tab -->
+    <div id="tabTs" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+      <div class="ts-scroll" id="tsBody"></div>
+      <div class="audio-bar" id="audioBar">
+        <div class="ab-info">
+          <span class="ab-title" id="abTitle">Q3 戦略会議</span>
+          <span class="ab-speaker" id="abSpeaker">鈴木部長 · 00:02</span>
+        </div>
+        <div class="ab-controls">
+          <button class="ab-ctrl"><svg viewBox="0 0 16 16" fill="rgba(255,255,255,.7)"><polygon points="14,2 5,8 14,14"/><rect x="2" y="2" width="2" height="12" fill="rgba(255,255,255,.7)"/></svg></button>
+          <button class="ab-ctrl primary" id="playBtn" onclick="togglePlay()">
+            <svg id="playIco" viewBox="0 0 14 14"><polygon points="3,1.5 12.5,7 3,12.5" fill="white"/></svg>
+          </button>
+          <button class="ab-ctrl"><svg viewBox="0 0 16 16" fill="rgba(255,255,255,.7)"><polygon points="2,2 11,8 2,14"/><rect x="12" y="2" width="2" height="12" fill="rgba(255,255,255,.7)"/></svg></button>
+          <div class="ab-waveform" id="abWave" onclick="seekWave(event)">
+            <div class="ab-wf-fill" id="abFill"></div>
+            <div class="ab-wf-bars" id="abBars"></div>
+          </div>
+          <span class="ab-time" id="abTime">0:02</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- output tab -->
+    <div id="tabOut" class="out-scroll hidden">
+      <div class="out-card">
+        <div class="oc-head">
+          <div class="oc-head-lbl">出力形式を選択</div>
+          <div class="oc-type-pills">
+            <button class="oc-pill active" onclick="setOcPill('seibun',this)">整文</button>
+            <button class="oc-pill" onclick="setOcPill('minutes',this)">議事録</button>
+            <button class="oc-pill" onclick="setOcPill('summary',this)">要点まとめ</button>
+            <button class="oc-pill" onclick="setOcPill('translate',this)">英語翻訳</button>
+            <button class="oc-pill" onclick="setOcPill('prompt',this)">プロンプト展開</button>
+          </div>
+        </div>
+        <div class="oc-body" id="ocBody"></div>
+        <div class="oc-foot">
+          <button class="oc-act">コピー</button>
+          <button class="oc-act primary" onclick="setDetailTab('doc',null)">ドキュメント生成へ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- doc gen tab -->
+    <div id="tabDoc" class="doc-gen-scroll hidden">
+      <div class="doc-gen-label">出力形式を選択</div>
+      <div class="doc-fmt-cards">
+        <div class="doc-fmt-card selected sel-w" id="dfc-word" onclick="selDocFmt('word')">
+          <div class="dfc-icon" style="background:var(--word);"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm0 0v6h6M8 13h8M8 17h8M8 9h2" stroke="white" stroke-width="1.8" fill="none"/></svg></div>
+          <div class="dfc-info"><div class="dfc-title">Word</div><div class="dfc-sub">議事録・報告書・整文テキスト</div></div>
+          <div class="dfc-check checked" id="chk-word"><svg viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 5-5"/></svg></div>
+        </div>
+        <div class="doc-fmt-card" id="dfc-excel" onclick="selDocFmt('excel')">
+          <div class="dfc-icon" style="background:var(--excel);"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="1.8" fill="none"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18" stroke="white" stroke-width="1.2"/></svg></div>
+          <div class="dfc-info"><div class="dfc-title">Excel</div><div class="dfc-sub">数値データ・アクション管理表</div></div>
+          <div class="dfc-check" id="chk-excel"><svg viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 5-5"/></svg></div>
+        </div>
+        <div class="doc-fmt-card" id="dfc-ppt" onclick="selDocFmt('ppt')">
+          <div class="dfc-icon" style="background:var(--ppt);"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2" stroke="white" stroke-width="1.8" fill="none"/><path d="M9 18v4M15 18v4M6 22h12" stroke="white" stroke-width="1.5"/></svg></div>
+          <div class="dfc-info"><div class="dfc-title">PowerPoint</div><div class="dfc-sub">スライドデッキ・プレゼン資料</div></div>
+          <div class="dfc-check" id="chk-ppt"><svg viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 5-5"/></svg></div>
+        </div>
+      </div>
+
+      <button class="doc-gen-btn" id="genMainBtn" style="background:var(--word);" onclick="startGen()">
+        <svg viewBox="0 0 16 16"><path d="M3 1h9l4 4v10H3V1z" stroke="white" stroke-width="1.5" fill="none"/><path d="M12 1v4h4M6 9h5M6 12h5" stroke="white" stroke-width="1.2"/></svg>
+        <span id="genBtnLbl">Wordで生成する</span>
+      </button>
+
+      <!-- generated doc card -->
+      <div class="doc-preview-card hidden" id="docPreviewCard">
+        <div class="dpc-header">
+          <div class="dpc-title" id="dpcTitle">Q3戦略会議_議事録.docx</div>
+          <div class="dpc-meta">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6l3 3 7-7"/></svg>
+            <span id="dpcMeta">OneDriveに保存済 · 自動保存中</span>
+          </div>
+        </div>
+        <div style="padding:12px 14px;font-size:11px;color:var(--text2);background:var(--surf2);">
+          Microsoft 365 と同期済み。Office Online で編集できます。
+        </div>
+        <div class="dpc-actions">
+          <button class="dpc-act" onclick="toast('リンクをコピーしました','ok','🔗')">リンクをコピー</button>
+          <button class="dpc-act primary" id="dpcOpenBtn" style="background:var(--word);" onclick="toast('Office Onlineを開いています...','ok','↗')">Office Onlineで開く</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- terms + kb tab -->
+    <div id="tabTerms" class="out-scroll hidden">
+      <!-- terms -->
+      <div class="out-card" style="margin-bottom:10px;">
+        <div style="padding:10px 12px;border-bottom:1px solid var(--bdr);font-size:11px;font-weight:500;color:var(--text2);">抽出された専門用語</div>
+        <div style="padding:10px 12px;display:flex;flex-wrap:wrap;gap:5px;">
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--b50);color:var(--b800);">戦略レビュー</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--b50);color:var(--b800);">KPI</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--b50);color:var(--b800);">パイプライン</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--a50);color:var(--a600);">チャーンレート ✦</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--b50);color:var(--b800);">ARR</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--a50);color:var(--a600);">NRR ✦</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--b50);color:var(--b800);">OKR</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--a50);color:var(--a600);">ヘルススコア ✦</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--b50);color:var(--b800);">LTV/CAC</span>
+          <span style="font-size:11px;padding:3px 9px;border-radius:10px;background:var(--b50);color:var(--b800);">アップセル</span>
+        </div>
+        <div style="padding:0 12px 10px;font-size:9px;color:var(--text3);">✦ 新規抽出・辞書未登録</div>
+        <div style="padding:0 12px 10px;"><button style="width:100%;padding:9px;border-radius:9px;border:1px solid var(--bdr2);background:var(--surf2);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text2);cursor:pointer;" onclick="switchScreen('dict');toast('用語辞書に移動しました','','')">辞書で管理する</button></div>
+      </div>
+      <!-- action items -->
+      <div class="out-card" style="margin-bottom:10px;">
+        <div style="padding:10px 12px;border-bottom:1px solid var(--bdr);font-size:11px;font-weight:500;color:var(--text2);">アクションアイテム</div>
+        <div id="actList" style="padding:4px 0;"></div>
+      </div>
+      <!-- kb candidates -->
+      <div class="out-card">
+        <div style="padding:10px 12px;border-bottom:1px solid var(--bdr);font-size:11px;font-weight:500;color:var(--text2);">ナレッジ候補</div>
+        <div style="padding:10px 12px;">
+          <div style="background:var(--surf2);border-radius:10px;padding:10px;margin-bottom:8px;">
+            <div style="font-size:9px;font-weight:500;color:var(--a600);margin-bottom:3px;">インサイト</div>
+            <div style="font-size:13px;font-weight:500;color:var(--text1);margin-bottom:3px;">チャーン改善の4施策</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">オンボーディング改善・ヘルススコア活用・CS連携・アップセル体系化</div>
+            <button style="font-size:11px;padding:6px 12px;border-radius:7px;border:none;background:var(--t50);color:var(--t800);cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="toast('ナレッジベースに保存しました','ok','✓')">ナレッジベースに保存</button>
+          </div>
+          <div style="background:var(--surf2);border-radius:10px;padding:10px;">
+            <div style="font-size:9px;font-weight:500;color:var(--b600);margin-bottom:3px;">プロセス</div>
+            <div style="font-size:13px;font-weight:500;color:var(--text1);margin-bottom:3px;">来期OKR設定値</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">NRR 110%以上・ARR成長率35%・LTV/CAC比4.0以上</div>
+            <button style="font-size:11px;padding:6px 12px;border-radius:7px;border:none;background:var(--t50);color:var(--t800);cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="toast('ナレッジベースに保存しました','ok','✓')">ナレッジベースに保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ▸ SCREEN: DICTIONARY -->
+<div class="screen" id="scrDict">
+  <div class="dict-screen-inner">
+    <div class="screen-header">
+      <div class="sh-top"><div class="sh-title">用語辞書</div><button class="sh-btn">+ 追加</button></div>
+      <input class="sh-search" type="text" placeholder="用語を検索...">
+      <div class="scope-seg">
+        <button class="ss-btn active" id="dscP" onclick="setDScope('personal',this)">個人辞書</button>
+        <button class="ss-btn" id="dscO" onclick="setDScope('org',this)">組織辞書</button>
+      </div>
+    </div>
+    <div class="dict-list" id="dictList"></div>
+  </div>
+</div>
+
+<!-- ▸ SCREEN: KNOWLEDGE -->
+<div class="screen" id="scrKb">
+  <div class="screen-header">
+    <div class="sh-top"><div class="sh-title">ナレッジベース</div><button class="sh-btn">+ 追加</button></div>
+    <input class="sh-search" type="text" placeholder="ナレッジを検索...">
+    <div class="scope-seg">
+      <button class="ss-btn active" id="kscP" onclick="setKScope('personal',this)">個人</button>
+      <button class="ss-btn" id="kscO" onclick="setKScope('org',this)">組織</button>
+    </div>
+  </div>
+  <div class="kb-list" id="kbList"></div>
+</div>
+
+<!-- ▸ SCREEN: ADMIN -->
+<div class="screen" id="scrAdmin">
+  <div class="screen-header" style="padding:12px 14px 0;">
+    <div class="sh-top" style="margin-bottom:10px;"><div class="sh-title">管理者画面</div></div>
+  </div>
+  <div class="admin-seg" id="adminSeg">
+    <button class="as-btn active" onclick="setAdminTab('approval',this)">承認管理 <span class="cnt">4</span></button>
+    <button class="as-btn" onclick="setAdminTab('orgdict',this)">組織辞書</button>
+    <button class="as-btn" onclick="setAdminTab('orgkb',this)">組織KB</button>
+    <button class="as-btn" onclick="setAdminTab('stats',this)">統計</button>
+    <button class="as-btn" onclick="setAdminTab('prompt',this)">プロンプト</button>
+  </div>
+  <div class="admin-scroll" id="adminContent"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="bn-btn active" id="bn-rec" onclick="switchScreen('rec')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 22C6 18.7 8.7 16 12 16s6 2.7 6 6"/></svg>
+    録音
+  </button>
+  <button class="bn-btn" id="bn-dict" onclick="switchScreen('dict')">
+    <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 10h8M8 14h6"/></svg>
+    辞書
+    <span class="bn-badge">3</span>
+  </button>
+  <button class="bn-btn" id="bn-kb" onclick="switchScreen('kb')">
+    <svg viewBox="0 0 24 24"><polygon points="12,3 15.5,9.5 22,10.5 17,15.5 18.5,22 12,18.5 5.5,22 7,15.5 2,10.5 8.5,9.5"/></svg>
+    ナレッジ
+  </button>
+  <button class="bn-btn" id="bn-admin" onclick="switchScreen('admin')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M4 20C4 16.7 7.6 14 12 14s8 2.7 8 6"/><circle cx="19" cy="8" r="2"/></svg>
+    管理者
+    <span class="bn-badge">4</span>
+  </button>
+</div>
+</div><!-- /app -->
+
+<!-- OAUTH MODAL -->
+<div class="modal-wrap hidden" id="authModal">
+  <div class="modal">
+    <div class="modal-chrome"></div>
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <div class="modal-ms-ico">
+        <svg width="20" height="20" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" fill="#F25022"/><rect x="9" y="1" width="6" height="6" fill="#7FBA00"/><rect x="1" y="9" width="6" height="6" fill="#00A4EF"/><rect x="9" y="9" width="6" height="6" fill="#FFB900"/></svg>
+      </div>
+      <div><div class="modal-title" id="modalTitle">Microsoft 365</div><div class="modal-sub">Givery AI VoiceIQ がアクセスを要求</div></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-account">
+        <div class="modal-avatar">田中</div>
+        <div><div class="modal-acc-name">田中 健太</div><div class="modal-acc-email">k.tanaka@company.co.jp</div></div>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--text3)" stroke-width="1.5" style="margin-left:auto;"><path d="M5 3l4 4-4 4"/></svg>
+      </div>
+      <div class="save-loc-row">
+        <span class="save-loc-lbl">保存先</span>
+        <div class="save-loc-opts">
+          <button class="sl-opt active" id="slOD" onclick="setSaveLoc('onedrive')">OneDrive</button>
+          <button class="sl-opt" id="slSP" onclick="setSaveLoc('sharepoint')">SharePoint</button>
+        </div>
+      </div>
+      <div class="modal-scope">
+        <strong>Givery AI VoiceIQ Enterprise</strong> が以下の権限を要求します：
+        <ul>
+          <li id="scopeLbl">Files.ReadWrite — OneDriveへのファイル作成・保存</li>
+          <li>User.Read — プロフィール情報の読み取り</li>
+        </ul>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeModal()">キャンセル</button>
+        <button class="modal-confirm" onclick="confirmAuth()">許可して続行</button>
+      </div>
+    </div>
+    <div class="modal-foot">Azure Active Directory · OAuth 2.0 · PKCE</div>
+  </div>
+</div>
+
+<!-- GEN OVERLAY -->
+<div class="gen-overlay hidden" id="genOverlay">
+  <div class="gen-spinner" id="genSpinner"></div>
+  <div class="gen-lbl" id="genLbl"></div>
+  <div class="gen-steps" id="genSteps"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ═══ DATA ═══
+const RECS=[
+  {id:0,title:'Q3 戦略会議',dept:'営業部',date:'2025/01/15',dur:'1:23:44',isNew:true,terms:['KPI','ARR','NRR','チャーンレート']},
+  {id:1,title:'製品ロードマップ検討',dept:'開発部',date:'2025/01/14',dur:'0:58:12',isNew:false,terms:['ロードマップ','MVP','スプリント']},
+  {id:2,title:'新規取引先ヒアリング',dept:'営業部',date:'2025/01/13',dur:'0:42:30',isNew:false,terms:['BANT','パイプライン']},
+  {id:3,title:'週次チームMTG',dept:'全社',date:'2025/01/12',dur:'0:35:20',isNew:false,terms:['OKR','KPI']},
+  {id:4,title:'採用面接 エンジニア職',dept:'人事',date:'2025/01/11',dur:'0:28:45',isNew:false,terms:['オファー','スキルマッチ']},
+];
+const TS=[
+  {time:'00:02',speaker:'鈴木部長',text:'本日はQ3の<mark>戦略レビュー</mark>と来期の<mark>KPI</mark>設定について議論します。まず現状の<mark>パイプライン</mark>状況から確認しましょう。'},
+  {time:'01:15',speaker:'田中課長',text:'現在のパイプラインは全体で約3.2億円です。<mark>エンタープライズ</mark>向けが70%を占めており、<mark>コンバージョンレート</mark>は前四半期比で8%向上しています。'},
+  {time:'03:40',speaker:'佐藤部長',text:'<mark>ARR</mark>の成長率を見ると、SaaS事業が牽引しており年率で32%の成長を記録しています。ただし<mark>チャーンレート</mark>が若干上昇している点は要注意です。'},
+  {time:'07:22',speaker:'田中課長',text:'チャーンの主因は<mark>オンボーディング</mark>プロセスの不備と分析しています。<mark>カスタマーサクセス</mark>チームと連携して改善施策を実施する予定です。'},
+  {time:'11:05',speaker:'鈴木部長',text:'では来期の<mark>OKR</mark>についてですが、<mark>NRR</mark>を110%以上に設定することを提案します。あわせて<mark>LTV/CAC比</mark>の改善も重要指標に加えましょう。'},
+  {time:'15:33',speaker:'山田担当',text:'<mark>アップセル</mark>・<mark>クロスセル</mark>の機会を増やすため、既存顧客の<mark>ヘルススコア</mark>モニタリングを強化します。Q4中に専用ダッシュボードを構築します。'},
+];
+const OC={
+  seibun:'<p>本日はQ3の戦略レビューと来期のKPI設定について議論を行いました。現在のパイプラインは全体で約3.2億円に達しており、エンタープライズ向けが70%を占めています。コンバージョンレートは前四半期比で8%向上し、SaaS事業のARR成長率は年率32%を記録しています。チャーンレートの若干の上昇が懸念事項として挙げられ、オンボーディングプロセスの改善が必要と判断されました。</p>',
+  minutes:'<dl><div class="kv"><dt>日時</dt><dd>2025/01/15 14:00〜15:24</dd></div><div class="kv"><dt>参加者</dt><dd>鈴木部長、田中課長、佐藤部長、山田担当</dd></div></dl><h4>1. 現状報告</h4><ul><li>パイプライン：3.2億円（エンタープライズ70%）</li><li>コンバージョン：前四半期比+8%</li><li>ARR成長率：年率32%</li><li>チャーンレートが若干上昇</li></ul><h4>2. 決定事項</h4><ul><li>来期OKR：NRR 110%以上</li><li>LTV/CAC比の改善を重要指標に追加</li></ul><h4>アクション</h4><ul><li>オンボーディング改善（田中課長 / 1/31）</li><li>ヘルススコアDB構築（山田担当 / Q4）</li></ul>',
+  summary:'<h4>要点（3点）</h4><ul><li>パイプライン3.2億円・ARR32%成長と好調な一方、チャーンレート上昇が課題</li><li>対策：オンボーディング改善とCS連携強化を決定</li><li>来期OKR：NRR 110%以上・LTV/CAC比改善を重要指標に設定</li></ul>',
+  translate:"<p>Today's Q3 strategy review covered pipeline status (JPY 320M, 70% enterprise) and KPI targets. ARR growth reached 32% annually. Churn rate uptick flagged as concern. Remediation: onboarding improvement and CS collaboration. Next OKR: NRR 110%+.</p>",
+  prompt:'<h4>議事録生成プロンプト</h4><p style="font-family:\'DM Mono\',monospace;font-size:11px;background:var(--surf2);padding:10px;border-radius:8px;line-height:1.7;">以下の文字起こしを議事録フォーマットに変換してください。参加者・日時・決定事項・アクションアイテム（担当者・期限付き）の構造で出力し、組織辞書の専門用語は定義通りに使用してください。</p>'
+};
+const ACTS=[
+  {txt:'オンボーディング改善施策の立案',owner:'田中課長 · 1/31',done:false},
+  {txt:'ヘルススコアダッシュボード構築',owner:'山田担当 · Q4',done:false},
+  {txt:'パイプライン分析レポート共有',owner:'',done:true},
+  {txt:'来期OKR文書化・配布',owner:'鈴木部長 · 1/20',done:false},
+];
+const DICT_P=[
+  {word:'チャーンレート',def:'顧客が解約・離脱する割合。月次または年次で計測し、SaaS事業の健全性を示す重要指標。',cat:'CS',catCls:'cs',src:'Q3戦略会議',isNew:true},
+  {word:'NRR',def:'Net Revenue Retention（純収益維持率）。既存顧客からの収益維持・拡大を示す指標。100%超で純成長。',cat:'財務',catCls:'fin',src:'Q3戦略会議',isNew:true},
+  {word:'ヘルススコア',def:'顧客の製品活用状況や満足度を数値化したスコア。カスタマーサクセスがチャーン予防に活用。',cat:'CS',catCls:'cs',src:'Q3戦略会議',isNew:true},
+  {word:'ARR',def:'Annual Recurring Revenue（年間経常収益）。SaaSビジネスの規模を示す最重要指標。',cat:'財務',catCls:'fin',src:'組織辞書',isNew:false},
+  {word:'パイプライン',def:'商談の進捗状況をフェーズ別に管理するための営業管理手法。',cat:'営業',catCls:'sales',src:'組織辞書',isNew:false},
+  {word:'LTV/CAC比',def:'顧客生涯価値と顧客獲得コストの比率。SaaSの収益効率を測る重要な財務指標。',cat:'財務',catCls:'fin',src:'個人辞書',isNew:false},
+];
+const DICT_O=[
+  {word:'ARR',def:'Annual Recurring Revenue。SaaSビジネスの年間経常収益。企業規模の基準指標。',cat:'財務',catCls:'fin',src:'承認済',isNew:false},
+  {word:'パイプライン',def:'商談進捗をフェーズ別に管理する営業管理概念。',cat:'営業',catCls:'sales',src:'承認済',isNew:false},
+  {word:'オンボーディング',def:'新規顧客の製品導入支援プロセス。初期設定から活用定着まで。',cat:'CS',catCls:'cs',src:'承認済',isNew:false},
+  {word:'OKR',def:'Objectives and Key Results。目標管理フレームワーク。',cat:'全社',catCls:'gen',src:'承認済',isNew:false},
+];
+const KB_P=[
+  {type:'insight',typeLabel:'インサイト',title:'チャーン改善の4つの施策',body:'オンボーディングプロセスの見直し、ヘルススコアによるリスク早期検知、CSチームとの定期レビュー強化、アップセル・クロスセル機会の体系化。',date:'2025/01/15 Q3戦略会議',scope:'pending'},
+  {type:'rule',typeLabel:'ルール',title:'KPI設定基準（来期）',body:'来期OKR：NRR 110%以上、ARR成長率35%、LTV/CAC比4.0以上、チャーンレート月次1.5%以下。',date:'2025/01/15 Q3戦略会議',scope:'personal'},
+  {type:'process',typeLabel:'プロセス',title:'エンタープライズ商談フロー',body:'初期ヒアリング→POC→提案→契約の4フェーズで進行。各フェーズの移行条件の明確化が重要。',date:'2025/01/14 製品ロードマップ',scope:'org'},
+];
+const KB_O=[
+  {type:'process',typeLabel:'プロセス',title:'エンタープライズ商談フロー',body:'初期ヒアリング→POC→提案→契約の4フェーズで進行。コンバージョン向上には各フェーズの移行条件の明確化が重要。',date:'承認日: 2025/01/10',scope:'org'},
+  {type:'rule',typeLabel:'ルール',title:'四半期KPIレビュー基準',body:'偏差15%以上で対策検討を必須とする。主要5指標を毎四半期末に全部門でレビュー。',date:'承認日: 2024/10/01',scope:'org'},
+];
+const ADMIN_APPROVALS=[
+  {type:'dict',typeLabel:'用語辞書',name:'チャーンレート',user:'田中 健太',date:'2025/01/15',desc:'顧客が解約・離脱する割合。月次または年次で計測し、SaaS事業の健全性を示す重要指標。Q3戦略会議の録音から自動抽出。'},
+  {type:'dict',typeLabel:'用語辞書',name:'ヘルススコア',user:'田中 健太',date:'2025/01/15',desc:'顧客の製品活用状況や満足度を数値化したスコア。カスタマーサクセスがチャーン予防に活用。'},
+  {type:'kb',typeLabel:'ナレッジ',name:'チャーン改善の4つの施策',user:'鈴木 一郎',date:'2025/01/15',desc:'オンボーディングプロセスの見直し、ヘルススコアによるリスク早期検知、CSチームとの定期レビュー強化、アップセル・クロスセル機会の体系化。'},
+  {type:'prompt',typeLabel:'プロンプト',name:'SaaS商談議事録フォーマット',user:'佐藤 花子',date:'2025/01/14',desc:'ARR・NRR・チャーン等の指標を自動補完する議事録テンプレート。組織辞書の用語を参照してフォーマット生成。'},
+];
+
+// ═══ STATE ═══
+let currentScreen='rec';
+let currentDocFmt='word';
+let saveLoc='onedrive';
+let isPlaying=false;
+let dictScope='personal';
+let kbScope='personal';
+let adminTab='approval';
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded',()=>{
+  buildWaveform();
+  buildRecCards();
+  buildActList();
+  setOcPill('seibun',document.querySelector('.oc-pill.active'));
+  buildDict();
+  buildKb();
+  buildAdminContent('approval');
+});
+
+// ═══ WAVEFORM ═══
+function buildWaveform(){
+  const c=document.getElementById('abBars');
+  for(let i=0;i<60;i++){const b=document.createElement('div');b.className='ab-bar';b.style.height=(Math.random()*55+20)+'%';c.appendChild(b);}
+}
+
+// ═══ REC CARDS ═══
+function buildRecCards(){
+  const w=document.getElementById('recCards');
+  w.innerHTML=RECS.map(r=>`
+    <div class="rec-card${r.id===0?' active-card':''}" onclick="openRec(${r.id})">
+      <div class="rc-top">
+        <div class="rc-dot${r.isNew?' new':''}"></div>
+        <div class="rc-title">${r.title}</div>
+        <div class="rc-dur">${r.dur}</div>
+      </div>
+      <div class="rc-meta">
+        <span class="rc-date">${r.date}</span>
+        <span class="rc-tag">${r.dept}</span>
+      </div>
+      <div class="rc-bottom">
+        <div class="rc-terms">${r.terms.slice(0,3).map(t=>`<span class="rc-term">${t}</span>`).join('')}</div>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--text3)" stroke-width="1.5" class="rc-arrow"><path d="M5 3l4 4-4 4"/></svg>
+      </div>
+    </div>`).join('');
+}
+
+function openRec(id){
+  const r=RECS[id];
+  document.getElementById('detailTitle').textContent=r.title;
+  document.getElementById('detailTag').textContent=r.dept;
+  document.getElementById('abTitle').textContent=r.title;
+  document.getElementById('recListView').classList.add('hidden');
+  document.getElementById('recDetailView').classList.remove('hidden');
+  buildTs();
+  setDetailTab('ts',document.querySelector('.seg-tab.active'));
+}
+function showRecList(){
+  document.getElementById('recDetailView').classList.add('hidden');
+  document.getElementById('recListView').classList.remove('hidden');
+}
+
+// ═══ TRANSCRIPT ═══
+function buildTs(){
+  const b=document.getElementById('tsBody');
+  b.innerHTML=TS.map((e,i)=>`
+    <div class="ts-entry${i===0?' playing':''}" onclick="playEntry(${i})">
+      <div class="ts-left">
+        <span class="ts-time">${e.time}</span>
+        <button class="ts-play"><svg viewBox="0 0 8 9"><polygon points="0,0.5 8,4.5 0,8.5" fill="white"/></svg></button>
+      </div>
+      <div class="ts-right">
+        <div class="ts-speaker">${e.speaker}</div>
+        <div class="ts-text">${e.text}</div>
+      </div>
+    </div>`).join('');
+}
+function playEntry(i){
+  document.querySelectorAll('.ts-entry').forEach((el,j)=>el.classList.toggle('playing',j===i));
+  document.getElementById('abSpeaker').textContent=TS[i].speaker+' · '+TS[i].time;
+  isPlaying=true;updatePlayBtn();
+}
+function togglePlay(){isPlaying=!isPlaying;updatePlayBtn();}
+function updatePlayBtn(){
+  document.getElementById('playIco').innerHTML=isPlaying
+    ?'<rect x="2" y="1.5" width="3" height="11" fill="white"/><rect x="9" y="1.5" width="3" height="11" fill="white"/>'
+    :'<polygon points="3,1.5 12.5,7 3,12.5" fill="white"/>';
+}
+function seekWave(e){
+  const r=document.getElementById('abWave').getBoundingClientRect();
+  const p=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));
+  document.getElementById('abFill').style.width=p+'%';
+}
+
+// ═══ DETAIL TABS ═══
+function setDetailTab(tab,btn){
+  document.querySelectorAll('.seg-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  else{
+    const tabs=['ts','out','doc','terms'];
+    const idx=tabs.indexOf(tab);
+    document.querySelectorAll('.seg-tab')[idx]?.classList.add('active');
+  }
+  document.getElementById('tabTs').style.display=tab==='ts'?'flex':'none';
+  document.getElementById('tabOut').classList.toggle('hidden',tab!=='out');
+  document.getElementById('tabDoc').classList.toggle('hidden',tab!=='doc');
+  document.getElementById('tabTerms').classList.toggle('hidden',tab!=='terms');
+  document.getElementById('audioBar').style.display=tab==='ts'?'block':'none';
+}
+
+// ═══ OUTPUT CONTENT ═══
+function setOcPill(t,btn){
+  document.querySelectorAll('.oc-pill').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('ocBody').innerHTML=OC[t]||'';
+}
+
+// ═══ DOC FORMAT ═══
+const FMT_CFG={
+  word:{label:'Word',bg:'#2B5797',btnLbl:'Wordで生成する',name:'Q3戦略会議_議事録.docx'},
+  excel:{label:'Excel',bg:'#1D6F42',btnLbl:'Excelで生成する',name:'Q3戦略会議_データ.xlsx'},
+  ppt:{label:'PowerPoint',bg:'#B7472A',btnLbl:'PPTで生成する',name:'Q3戦略会議_資料.pptx'},
+};
+function selDocFmt(f){
+  currentDocFmt=f;
+  ['word','excel','ppt'].forEach(t=>{
+    const card=document.getElementById('dfc-'+t);
+    const chk=document.getElementById('chk-'+t);
+    card.className='doc-fmt-card'+(t===f?` selected sel-${t.charAt(0)}`:'');
+    chk.className='dfc-check'+(t===f?' checked':'');
+  });
+  const cfg=FMT_CFG[f];
+  const btn=document.getElementById('genMainBtn');
+  btn.style.background=cfg.bg;
+  document.getElementById('genBtnLbl').textContent=cfg.btnLbl;
+}
+
+// ═══ GENERATE ═══
+function startGen(){
+  document.getElementById('authModal').classList.remove('hidden');
+  const cfg=FMT_CFG[currentDocFmt];
+  document.getElementById('modalTitle').textContent=cfg.label+' を作成';
+}
+function setSaveLoc(l){
+  saveLoc=l;
+  document.getElementById('slOD').classList.toggle('active',l==='onedrive');
+  document.getElementById('slSP').classList.toggle('active',l==='sharepoint');
+  document.getElementById('scopeLbl').textContent=l==='sharepoint'
+    ?'Sites.ReadWrite.All — SharePointへのファイル保存'
+    :'Files.ReadWrite — OneDriveへのファイル作成・保存';
+}
+function closeModal(){document.getElementById('authModal').classList.add('hidden');}
+function confirmAuth(){
+  closeModal();
+  runGen();
+}
+function runGen(){
+  const ov=document.getElementById('genOverlay');ov.classList.remove('hidden');
+  const cfg=FMT_CFG[currentDocFmt];
+  document.getElementById('genSpinner').style.borderTopColor=cfg.bg;
+  document.getElementById('genLbl').textContent=cfg.label+'を生成中...';
+  const loc=saveLoc==='sharepoint'?'SharePoint':'OneDrive';
+  const steps=['Azure OpenAIへ送信中','コンテンツを整形中',cfg.label+'形式に変換中','Graph APIでファイル作成中',loc+'に保存中'];
+  const se=document.getElementById('genSteps');
+  se.innerHTML=steps.map(s=>`<div class="gstep"><div class="gsd"></div><span>${s}</span></div>`).join('');
+  const all=se.querySelectorAll('.gstep');let cur=0;
+  function adv(){
+    if(cur>0)all[cur-1].className='gstep done';
+    if(cur<all.length){all[cur].className='gstep act';cur++;setTimeout(adv,cur===1?700:600);}
+    else{all[cur-1].className='gstep done';setTimeout(()=>finishGen(loc,cfg),400);}
+  }setTimeout(adv,200);
+}
+function finishGen(loc,cfg){
+  document.getElementById('genOverlay').classList.add('hidden');
+  const pc=document.getElementById('docPreviewCard');pc.classList.remove('hidden');
+  document.getElementById('dpcTitle').textContent=cfg.name;
+  document.getElementById('dpcMeta').textContent=loc+'に保存済 · 自動保存中';
+  document.getElementById('dpcOpenBtn').style.background=cfg.bg;
+  toast(cfg.name+' を '+loc+' に保存しました',{word:'tw',excel:'te',ppt:'tp'}[currentDocFmt],'✓');
+}
+
+// ═══ ACTION LIST ═══
+function buildActList(){
+  document.getElementById('actList').innerHTML=ACTS.map((a,i)=>`
+    <div class="act-item-m${a.done?' done':''}" id="act${i}" style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bdr);">
+      <div onclick="toggleAct(${i})" style="width:18px;height:18px;border-radius:5px;border:2px solid ${a.done?'var(--b400)':'#85B7EB'};background:${a.done?'var(--b400)':'var(--surf)'};flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;" id="actcb${i}">
+        ${a.done?'<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><path d="M1.5 5l2.5 2.5 5-5"/></svg>':''}
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:13px;color:var(--text1);${a.done?'text-decoration:line-through;color:var(--text3);':''}">${a.txt}</div>
+        ${a.owner?`<div style="font-size:10px;color:var(--text3);">${a.owner}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+function toggleAct(i){
+  ACTS[i].done=!ACTS[i].done;buildActList();
+}
+
+// ═══ DICT ═══
+function buildDict(){
+  const data=dictScope==='personal'?DICT_P:DICT_O;
+  const catColors={cs:'background:var(--t50);color:var(--t800);',fin:'background:var(--a50);color:var(--a600);',sales:'background:var(--b50);color:var(--b800);',gen:'background:var(--g100);color:var(--g600);'};
+  document.getElementById('dictList').innerHTML=data.map(d=>`
+    <div class="dict-item${d.isNew?' new-item':''}">
+      <div class="di-top">
+        <div style="flex:1;"><span class="di-word">${d.word}</span>${d.isNew?'<span class="di-new">新規</span>':''}</div>
+        <span class="di-cat" style="${catColors[d.catCls]||catColors.gen}">${d.cat}</span>
+      </div>
+      <div class="di-def">${d.def}</div>
+      <div class="di-foot">
+        <span class="di-src">${d.src}</span>
+        <button class="di-act">編集</button>
+        <button class="di-act del">削除</button>
+      </div>
+    </div>`).join('');
+}
+function setDScope(s,btn){
+  dictScope=s;
+  document.getElementById('dscP').classList.toggle('active',s==='personal');
+  document.getElementById('dscO').classList.toggle('active',s==='org');
+  buildDict();
+}
+
+// ═══ KB ═══
+function buildKb(){
+  const data=kbScope==='personal'?KB_P:KB_O;
+  const scopeLabel={personal:'個人のみ',org:'組織共有',pending:'承認待ち'};
+  document.getElementById('kbList').innerHTML=data.map(k=>`
+    <div class="kb-card">
+      <div class="kb-head">
+        <span class="kb-type ${k.type}">${k.typeLabel}</span>
+        <span class="kb-title">${k.title}</span>
+      </div>
+      <div class="kb-body-txt">${k.body}</div>
+      <div class="kb-foot">
+        <span class="kb-date">${k.date}</span>
+        <span class="kb-scope ${k.scope}">${scopeLabel[k.scope]}</span>
+        <button class="kb-btn">編集</button>
+        ${k.scope==='pending'?'<button class="kb-btn primary" onclick="toast(\'組織への申請を送信しました\',\'ok\',\'✓\')">組織へ申請</button>':''}
+      </div>
+    </div>`).join('');
+}
+function setKScope(s,btn){
+  kbScope=s;
+  document.getElementById('kscP').classList.toggle('active',s==='personal');
+  document.getElementById('kscO').classList.toggle('active',s==='org');
+  buildKb();
+}
+
+// ═══ ADMIN ═══
+function buildAdminContent(tab){
+  const ac=document.getElementById('adminContent');
+  if(tab==='approval'){
+    ac.innerHTML=`<div class="admin-section">
+      <div class="admin-sec-title">承認待ちアイテム <span class="admin-count">4件</span></div>
+      ${ADMIN_APPROVALS.map((a,i)=>`
+        <div class="appr-card" id="appr${i}">
+          <div class="appr-head">
+            <span class="appr-type-badge ${a.type}">${a.typeLabel}</span>
+            <span class="appr-user">申請: ${a.user}</span>
+            <span class="appr-date">${a.date}</span>
+          </div>
+          <div class="appr-body">
+            <div class="appr-name">${a.name}</div>
+            <div class="appr-desc">${a.desc}</div>
+          </div>
+          <div class="appr-acts">
+            <button class="appr-approve" onclick="approveItem(${i},this)">承認して${a.type==='kb'?'組織KBに':'組織辞書に'}追加</button>
+            <button class="appr-reject">却下</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  } else if(tab==='orgdict'){
+    ac.innerHTML=`<div class="admin-section">
+      <div class="admin-sec-title">組織辞書管理</div>
+      <input class="sh-search" type="text" placeholder="用語を検索..." style="display:block;margin-bottom:10px;">
+      ${DICT_O.map(d=>`
+        <div class="dict-item" style="margin:0 0 8px;">
+          <div class="di-top"><div class="di-word">${d.word}</div><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:var(--b50);color:var(--b800);">${d.cat}</span></div>
+          <div class="di-def">${d.def}</div>
+          <div class="di-foot"><span class="di-src">${d.src}</span><button class="di-act">編集</button></div>
+        </div>`).join('')}
+    </div>`;
+  } else if(tab==='orgkb'){
+    ac.innerHTML=`<div class="admin-section">
+      <div class="admin-sec-title">組織ナレッジ管理</div>
+      ${KB_O.map(k=>`
+        <div class="kb-card" style="margin-bottom:8px;">
+          <div class="kb-head"><span class="kb-type ${k.type}">${k.typeLabel}</span><span class="kb-title">${k.title}</span></div>
+          <div class="kb-body-txt">${k.body}</div>
+          <div class="kb-foot"><span class="kb-date">${k.date}</span><span class="kb-scope org">組織共有中</span><button class="kb-btn">編集</button></div>
+        </div>`).join('')}
+    </div>`;
+  } else if(tab==='stats'){
+    ac.innerHTML=`<div class="admin-section">
+      <div class="admin-sec-title">利用統計 — 2025年1月</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val">147</div><div class="stat-lbl">総録音数</div><div class="stat-chg">+12% 前月比</div></div>
+        <div class="stat-card"><div class="stat-val">1,284</div><div class="stat-lbl">抽出用語数</div><div class="stat-chg">+89 今月</div></div>
+        <div class="stat-card"><div class="stat-val">342</div><div class="stat-lbl">ナレッジ件数</div><div class="stat-chg">+28 今月</div></div>
+        <div class="stat-card"><div class="stat-val">72</div><div class="stat-lbl">ドキュメント生成</div><div class="stat-chg">今月合計</div></div>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-chart-title">部門別録音数</div>
+        <div class="bc-row"><span class="bc-label">営業部</span><div class="bc-track"><div class="bc-fill" style="width:72%;background:var(--brand);"></div></div><span class="bc-val">72%</span></div>
+        <div class="bc-row"><span class="bc-label">開発部</span><div class="bc-track"><div class="bc-fill" style="width:45%;background:var(--b400);"></div></div><span class="bc-val">45%</span></div>
+        <div class="bc-row"><span class="bc-label">経営企画</span><div class="bc-track"><div class="bc-fill" style="width:30%;background:var(--t400);"></div></div><span class="bc-val">30%</span></div>
+        <div class="bc-row"><span class="bc-label">人事</span><div class="bc-track"><div class="bc-fill" style="width:18%;background:var(--a400);"></div></div><span class="bc-val">18%</span></div>
+      </div>
+    </div>`;
+  } else if(tab==='prompt'){
+    ac.innerHTML=`<div class="admin-section">
+      <div class="admin-sec-title">プロンプト管理・展開</div>
+      <div class="prompt-list">
+        <div class="prompt-card"><div class="pc-type" style="color:var(--word);">議事録</div><div class="pc-title">SaaS商談議事録フォーマット</div><div class="pc-desc">組織辞書を参照してSaaS特有の指標を自動補完。アクションアイテムを担当者別に整理。</div><div class="pc-acts"><button class="pc-deploy" onclick="toast('プロンプトを展開しました','ok','✓')">展開する</button><button class="pc-edit">編集</button></div></div>
+        <div class="prompt-card"><div class="pc-type" style="color:var(--b600);">要点</div><div class="pc-title">エグゼクティブサマリー生成</div><div class="pc-desc">経営層向けに数値・決定事項・リスクを3分で読める形式にまとめるプロンプト。</div><div class="pc-acts"><button class="pc-deploy" onclick="toast('プロンプトを展開しました','ok','✓')">展開する</button><button class="pc-edit">編集</button></div></div>
+        <div class="prompt-card"><div class="pc-type" style="color:var(--t600);">翻訳</div><div class="pc-title">英語ビジネス翻訳（用語保持）</div><div class="pc-desc">組織辞書の専門用語を維持しながら自然な英語ビジネス文体に翻訳。</div><div class="pc-acts"><button class="pc-deploy" onclick="toast('プロンプトを展開しました','ok','✓')">展開する</button><button class="pc-edit">編集</button></div></div>
+        <div class="prompt-card dashed" onclick="toast('新規プロンプト作成画面を開きます','','')">
+          <div style="font-size:22px;color:var(--g200);">+</div>
+          <div style="font-size:12px;color:var(--text3);">新しいプロンプトを作成</div>
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+function setAdminTab(tab,btn){
+  document.querySelectorAll('.as-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildAdminContent(tab);
+}
+
+function approveItem(i,btn){
+  const card=document.getElementById('appr'+i);
+  card.style.opacity='.5';card.style.pointerEvents='none';
+  card.querySelector('.appr-acts').innerHTML='<div class="appr-done-lbl">✓ 承認済み · 組織に追加されました</div>';
+  toast('承認が完了しました','ok','✓');
+}
+
+// ═══ SCREEN SWITCH ═══
+function switchScreen(s){
+  currentScreen=s;
+  const map={rec:'scrRec',dict:'scrDict',kb:'scrKb',admin:'scrAdmin'};
+  const bnMap={rec:'bn-rec',dict:'bn-dict',kb:'bn-kb',admin:'bn-admin'};
+  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+  document.getElementById(map[s]).classList.add('active');
+  document.querySelectorAll('.bn-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(bnMap[s]).classList.add('active');
+  if(s==='dict')buildDict();
+  if(s==='kb')buildKb();
+}
+
+// ═══ TOAST ═══
+function toast(msg,cls='',icon=''){
+  const w=document.getElementById('toastWrap');
+  const t=document.createElement('div');
+  t.className='toast'+(cls?' '+cls:'');
+  t.innerHTML=(icon?`<span style="font-size:13px;">${icon}</span>`:'')+`<span>${msg}</span><button class="toast-close" onclick="this.closest('.toast').remove()">×</button>`;
+  w.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';},3000);
+  setTimeout(()=>t.remove(),3400);
+}
+</script>
+</body>
+</html>
