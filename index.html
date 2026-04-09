@@ -7,7 +7,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size:13px;}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size:14px;}
 
 /* ── DESIGN TOKENS ── */
 :root{
@@ -129,13 +129,13 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 }
 .sb-section{border-bottom:1px solid var(--bdr);}
 .sb-label{
-  font-size:9px;font-weight:500;text-transform:uppercase;
+  font-size:10px;font-weight:500;text-transform:uppercase;
   letter-spacing:.08em;color:var(--text3);padding:8px 14px 3px;
 }
 .sb-btn{
   display:flex;align-items:center;gap:8px;width:100%;
   padding:7px 14px;border:none;background:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text2);
+  font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text2);
   text-align:left;transition:all .12s;position:relative;
 }
 .sb-btn:hover{background:var(--surf2);color:var(--text1);}
@@ -165,10 +165,10 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
   content:'';position:absolute;left:0;top:0;bottom:0;
   width:2px;background:var(--brand-red);
 }
-.ri-title{font-size:12px;font-weight:500;color:var(--text1);margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ri-meta{font-size:10px;color:var(--text3);display:flex;gap:6px;}
+.ri-title{font-size:13px;font-weight:500;color:var(--text1);margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ri-meta{font-size:11px;color:var(--text3);display:flex;gap:6px;}
 .ri-tag{
-  display:inline-block;margin-top:3px;font-size:9px;padding:1px 6px;
+  display:inline-block;margin-top:3px;font-size:10px;padding:1px 6px;
   border-radius:3px;background:var(--g100);color:var(--g600);
 }
 
@@ -259,7 +259,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 .ts-entry.playing{background:#EEF5FF;}
 .ts-entry.playing::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--b400);}
 .ts-left{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:44px;flex-shrink:0;}
-.ts-time{font-size:9px;color:var(--b600);font-family:'DM Mono',monospace;font-weight:500;}
+.ts-time{font-size:10px;color:var(--b600);font-family:'DM Mono',monospace;font-weight:500;}
 .ts-play{
   width:18px;height:18px;border-radius:50%;background:var(--b400);
   display:flex;align-items:center;justify-content:center;
@@ -268,8 +268,8 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 .ts-entry:hover .ts-play,.ts-entry.playing .ts-play{opacity:1;}
 .ts-play svg{width:7px;height:7px;fill:#fff;}
 .ts-right{flex:1;min-width:0;}
-.ts-speaker{font-size:9px;font-weight:500;color:var(--text3);margin-bottom:1px;}
-.ts-text{font-size:11px;color:var(--text1);line-height:1.65;}
+.ts-speaker{font-size:10px;font-weight:500;color:var(--text3);margin-bottom:1px;}
+.ts-text{font-size:12px;color:var(--text1);line-height:1.65;}
 .ts-text mark{background:rgba(186,117,23,.14);color:var(--a600);padding:0 2px;border-radius:2px;font-weight:500;}
 
 /* audio player */
@@ -316,8 +316,8 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
   transition:all .12s;
 }
 .oc-tab.active{background:var(--b50);color:var(--b800);border-color:var(--b100);font-weight:500;}
-.oc-body{padding:14px;font-size:12px;color:var(--text1);line-height:1.75;}
-.oc-body h4{font-size:11px;font-weight:500;color:var(--text2);margin:10px 0 5px;}
+.oc-body{padding:14px;font-size:13px;color:var(--text1);line-height:1.75;}
+.oc-body h4{font-size:12px;font-weight:500;color:var(--text2);margin:10px 0 5px;}
 .oc-body h4:first-child{margin-top:0;}
 .oc-body ul{padding-left:16px;}
 .oc-body li{margin-bottom:4px;}
@@ -497,11 +497,11 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 }
 .dict-table td{
   padding:9px 12px;border-bottom:1px solid var(--bdr);
-  font-size:11px;color:var(--text1);vertical-align:top;
+  font-size:12px;color:var(--text1);vertical-align:top;
 }
 .dict-table tr:hover td{background:var(--surf2);}
 .dict-word{font-weight:500;color:var(--b800);}
-.dict-def{color:var(--text2);line-height:1.55;font-size:11px;}
+.dict-def{color:var(--text2);line-height:1.55;font-size:12px;}
 .dict-cat{
   font-size:9px;padding:2px 7px;border-radius:10px;white-space:nowrap;
 }
@@ -546,7 +546,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 .kb-type-badge.rule{background:var(--t50);color:var(--t800);}
 .kb-type-badge.insight{background:var(--a50);color:var(--a600);}
 .kb-card-title{font-size:13px;font-weight:500;color:var(--text1);}
-.kb-card-body{padding:12px 14px;font-size:11px;color:var(--text2);line-height:1.65;}
+.kb-card-body{padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.65;}
 .kb-card-foot{
   display:flex;align-items:center;gap:8px;padding:8px 14px;
   border-top:1px solid var(--bdr);background:var(--surf2);
@@ -570,24 +570,31 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 ══════════════════════════════════════ */
 .admin-screen{flex:1;overflow:hidden;display:flex;}
 .admin-subnav{
-  width:200px;flex-shrink:0;border-right:1px solid var(--bdr);
-  background:var(--surf);padding:12px 0;
+  width:200px;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.08);
+  background:#1A2332;padding:0;display:flex;flex-direction:column;
+}
+/* Admin subnav header badge */
+.admin-subnav::before{
+  content:'ADMIN';display:block;
+  font-size:9px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.35);
+  padding:14px 14px 4px;
 }
 .admin-subnav-title{
-  font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--text3);padding:0 14px 6px;
+  font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;
+  color:rgba(255,255,255,.3);padding:0 14px 8px;
+  border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:4px;
 }
 .asn-btn{
-  display:flex;align-items:center;gap:7px;width:100%;padding:7px 14px;
+  display:flex;align-items:center;gap:7px;width:100%;padding:8px 14px;
   border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;
-  font-size:11px;color:var(--text2);text-align:left;transition:all .12s;position:relative;
+  font-size:12px;color:rgba(255,255,255,.5);text-align:left;transition:all .12s;position:relative;
 }
-.asn-btn:hover{background:var(--surf2);color:var(--text1);}
-.asn-btn.active{background:rgba(198,0,0,.05);color:var(--brand-red);font-weight:500;}
-.asn-btn.active::after{content:'';position:absolute;right:0;top:0;bottom:0;width:2px;background:var(--brand-red);}
+.asn-btn:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);}
+.asn-btn.active{background:rgba(198,0,0,.2);color:#fff;font-weight:500;}
+.asn-btn.active::after{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;background:var(--brand-red);border-radius:2px 0 0 2px;}
 .asn-badge{
   margin-left:auto;font-size:9px;font-weight:500;
-  padding:1px 5px;border-radius:7px;background:var(--a50);color:var(--a600);
+  padding:1px 6px;border-radius:7px;background:var(--brand-red);color:#fff;
 }
 .admin-content{flex:1;overflow-y:auto;}
 .admin-section{padding:16px 20px;border-bottom:1px solid var(--bdr);}
@@ -1086,6 +1093,30 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 
 <!-- ▸ SCREEN: ADMIN -->
 <div class="screen" id="scrAdmin">
+  <!-- Admin-specific header bar -->
+  <div style="
+    display:flex;align-items:center;gap:12px;padding:0 20px;height:44px;flex-shrink:0;
+    background:linear-gradient(90deg,#1A2332 0%,#243040 100%);
+    border-bottom:2px solid var(--brand-red);
+  ">
+    <div style="display:flex;align-items:center;gap:7px;">
+      <div style="width:20px;height:20px;border-radius:5px;background:var(--brand-red);display:flex;align-items:center;justify-content:center;">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.8"><circle cx="6" cy="4" r="2.2"/><path d="M2 11C2 8.8 3.8 7 6 7s4 1.8 4 4"/><circle cx="10" cy="5" r="1.5"/></svg>
+      </div>
+      <span style="font-size:13px;font-weight:600;color:#fff;letter-spacing:.01em;">管理者コンソール</span>
+    </div>
+    <div style="
+      font-size:10px;font-weight:500;padding:3px 9px;border-radius:4px;
+      background:rgba(198,0,0,.25);color:#ff9999;border:1px solid rgba(198,0,0,.4);
+      letter-spacing:.04em;
+    ">ADMIN ONLY</div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+      <div style="font-size:10px;color:rgba(255,255,255,.4);">
+        <span style="color:rgba(255,255,255,.25);">ログイン中：</span> 鈴木 一郎（管理者）
+      </div>
+      <div style="width:26px;height:26px;border-radius:50%;background:var(--brand-red);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;">鈴</div>
+    </div>
+  </div>
   <div class="admin-screen">
     <div class="admin-subnav">
       <div class="admin-subnav-title">管理メニュー</div>
@@ -1112,7 +1143,8 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
     </div>
     <div class="admin-content" id="adminContent"></div>
   </div>
-</div>
+</div><!-- /admin-screen inner -->
+</div><!-- /scrAdmin -->
 
 </div><!-- /content -->
 </div><!-- /main -->
@@ -1402,7 +1434,245 @@ function showOfficeEmbed(f){
     dc.innerHTML=`<div style="text-align:center;margin-bottom:28px;"><div style="font-size:8px;color:#aaa;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;">社外秘 · Givery AI VoiceIQ Enterprise 自動生成</div><h1 style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:5px;font-family:sans-serif;">Q3 戦略会議 議事録</h1><div style="font-size:10px;color:#666;">2025年1月15日（水）14:00〜15:24 | 営業部 第1会議室</div></div><table style="width:100%;font-size:10px;border-collapse:collapse;margin-bottom:18px;"><tr><td style="padding:4px 8px;border:1px solid #ddd;background:#f5f5f5;font-weight:600;width:22%;">参加者</td><td style="padding:4px 8px;border:1px solid #ddd;">鈴木部長、田中課長、佐藤部長、山田担当</td></tr><tr><td style="padding:4px 8px;border:1px solid #ddd;background:#f5f5f5;font-weight:600;">議題</td><td style="padding:4px 8px;border:1px solid #ddd;">Q3戦略レビュー / 来期KPI設定</td></tr></table><h2 style="font-size:13px;font-weight:700;color:#2B5797;border-bottom:2px solid #2B5797;padding-bottom:3px;margin-bottom:9px;font-family:sans-serif;">1. 現状報告</h2><ul style="font-size:11px;padding-left:16px;margin-bottom:14px;line-height:1.9;"><li>パイプライン合計：<strong>3.2億円</strong>（エンタープライズ向け70%）</li><li>コンバージョンレート：前四半期比<strong>+8%</strong></li><li>ARR成長率：年率<strong>32%</strong></li><li>チャーンレートが若干上昇 → 要注意</li></ul><h2 style="font-size:13px;font-weight:700;color:#2B5797;border-bottom:2px solid #2B5797;padding-bottom:3px;margin-bottom:9px;font-family:sans-serif;">2. 決定事項</h2><ul style="font-size:11px;padding-left:16px;margin-bottom:14px;line-height:1.9;"><li>来期OKR：<strong>NRR 110%以上</strong></li><li>LTV/CAC比の改善を重要指標に追加</li></ul><h2 style="font-size:13px;font-weight:700;color:#2B5797;border-bottom:2px solid #2B5797;padding-bottom:3px;margin-bottom:9px;font-family:sans-serif;">3. アクションアイテム</h2><table style="width:100%;font-size:10px;border-collapse:collapse;"><tr style="background:#EEF4FB;"><th style="padding:5px 8px;border:1px solid #ccc;text-align:left;">アクション</th><th style="padding:5px 8px;border:1px solid #ccc;">担当</th><th style="padding:5px 8px;border:1px solid #ccc;">期限</th></tr><tr><td style="padding:4px 8px;border:1px solid #ddd;">オンボーディング改善施策の立案</td><td style="padding:4px 8px;border:1px solid #ddd;text-align:center;">田中課長</td><td style="padding:4px 8px;border:1px solid #ddd;text-align:center;">1月31日</td></tr><tr style="background:#fafafa;"><td style="padding:4px 8px;border:1px solid #ddd;">ヘルススコアダッシュボード構築</td><td style="padding:4px 8px;border:1px solid #ddd;text-align:center;">山田担当</td><td style="padding:4px 8px;border:1px solid #ddd;text-align:center;">Q4末</td></tr><tr><td style="padding:4px 8px;border:1px solid #ddd;">来期OKR文書化・全社配布</td><td style="padding:4px 8px;border:1px solid #ddd;text-align:center;">鈴木部長</td><td style="padding:4px 8px;border:1px solid #ddd;text-align:center;">1月20日</td></tr></table>`;
   } else if(f==='excel'){
     dc.style.fontFamily='sans-serif';
-    dc.innerHTML=`<div style="margin-bottom:3px;font-size:10px;font-weight:600;color:#1D6F42;">Q3戦略会議_データ.xlsx</div><table style="border-collapse:collapse;font-size:10px;width:100%;"><tr style="background:#1D6F42;color:#fff;"><th style="padding:5px 9px;border:1px solid #158538;text-align:left;">指標</th><th style="padding:5px 9px;border:1px solid #158538;text-align:right;">Q2実績</th><th style="padding:5px 9px;border:1px solid #158538;text-align:right;">Q3実績</th><th style="padding:5px 9px;border:1px solid #158538;text-align:right;">前期比</th><th style="padding:5px 9px;border:1px solid #158538;text-align:right;">来期目標</th></tr><tr><td style="padding:4px 9px;border:1px solid #ddd;">パイプライン (億円)</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;">2.8</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;font-weight:600;">3.2</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;color:#1D6F42;">+14.3%</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;">3.8</td></tr><tr style="background:#F0F7F0;"><td style="padding:4px 9px;border:1px solid #ddd;">ARR成長率 (年率)</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;">28%</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;font-weight:600;">32%</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;color:#1D6F42;">+4pp</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;">35%</td></tr><tr><td style="padding:4px 9px;border:1px solid #ddd;">チャーンレート (月次)</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;">1.2%</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;font-weight:600;color:#B7472A;">1.6%</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;color:#B7472A;">+0.4pp</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;">≤1.5%</td></tr><tr style="background:#F0F7F0;"><td style="padding:4px 9px;border:1px solid #ddd;">NRR</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;">104%</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;font-weight:600;">107%</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;color:#1D6F42;">+3pp</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;font-weight:600;color:#1D6F42;">110%+</td></tr><tr><td style="padding:4px 9px;border:1px solid #ddd;">LTV/CAC比</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;">3.2</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;font-weight:600;">3.5</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;color:#1D6F42;">+0.3</td><td style="padding:4px 9px;border:1px solid #ddd;text-align:right;font-weight:600;color:#1D6F42;">4.0+</td></tr></table>`;
+    dc.style.padding='0';
+    dc.style.background='#E8E8E5';
+    dc.style.minHeight='900px';
+    dc.innerHTML=`
+<div style="background:#fff;padding:0 0 20px;">
+
+  <!-- Sheet tabs -->
+  <div style="display:flex;align-items:flex-end;gap:1px;padding:6px 12px 0;background:#D0D0CC;border-bottom:2px solid #1D6F42;">
+    <div style="padding:5px 16px;background:#fff;font-size:11px;font-weight:600;color:#1D6F42;border-radius:4px 4px 0 0;cursor:pointer;">KPI サマリー</div>
+    <div style="padding:5px 14px;background:#E0E0DC;font-size:11px;color:#666;border-radius:4px 4px 0 0;cursor:pointer;">月次推移</div>
+    <div style="padding:5px 14px;background:#E0E0DC;font-size:11px;color:#666;border-radius:4px 4px 0 0;cursor:pointer;">アクション管理</div>
+    <div style="padding:5px 14px;background:#E0E0DC;font-size:11px;color:#666;border-radius:4px 4px 0 0;cursor:pointer;">顧客別データ</div>
+    <div style="padding:5px 10px;background:#E0E0DC;font-size:14px;color:#888;border-radius:4px 4px 0 0;cursor:pointer;">+</div>
+  </div>
+
+  <!-- Column headers A-K -->
+  <div style="display:grid;grid-template-columns:28px 160px 72px 72px 72px 72px 72px 72px 72px 80px 80px;background:#E8E8E5;border-bottom:1px solid #C0C0BC;">
+    <div style="font-size:10px;color:#666;text-align:center;padding:3px 2px;border-right:1px solid #C8C8C4;"> </div>
+    ${['A','B','C','D','E','F','G','H','I','J'].map(c=>`<div style="font-size:10px;color:#333;text-align:center;padding:3px 4px;border-right:1px solid #C8C8C4;">${c}</div>`).join('')}
+  </div>
+
+  <!-- Row 1: Title -->
+  <div style="display:grid;grid-template-columns:28px 160px 72px 72px 72px 72px 72px 72px 72px 80px 80px;background:#fff;border-bottom:1px solid #E0E0DC;">
+    <div style="font-size:10px;color:#888;text-align:center;padding:3px 0;border-right:1px solid #E0E0DC;background:#F0F0EC;">1</div>
+    <div colspan="10" style="grid-column:2/12;padding:6px 10px;font-size:13px;font-weight:700;color:#1D6F42;letter-spacing:.01em;">Q3 営業KPI レポート ／ 2025年1月15日作成 ／ Givery AI VoiceIQ 自動生成</div>
+  </div>
+
+  <!-- Row 2: blank -->
+  <div style="display:grid;grid-template-columns:28px 160px 72px 72px 72px 72px 72px 72px 72px 80px 80px;background:#fff;border-bottom:1px solid #EFEFED;">
+    <div style="font-size:10px;color:#888;text-align:center;padding:3px 0;border-right:1px solid #E0E0DC;background:#F0F0EC;">2</div>
+    <div style="grid-column:2/12;padding:3px 0;"></div>
+  </div>
+
+  <!-- Row 3: Section header KPI -->
+  <div style="display:grid;grid-template-columns:28px 160px 72px 72px 72px 72px 72px 72px 72px 80px 80px;border-bottom:1px solid #B8D8B8;background:#D6EDD6;">
+    <div style="font-size:10px;color:#888;text-align:center;padding:4px 0;border-right:1px solid #C0D8C0;background:#C8E4C8;">3</div>
+    <div style="padding:4px 10px;font-size:11px;font-weight:700;color:#0A5020;border-right:1px solid #C0D8C0;">指標名</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;border-right:1px solid #C0D8C0;">Q1実績</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;border-right:1px solid #C0D8C0;">Q2実績</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;border-right:1px solid #C0D8C0;">Q3実績</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;border-right:1px solid #C0D8C0;">前期比</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;border-right:1px solid #C0D8C0;">来期目標</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;border-right:1px solid #C0D8C0;">達成率</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;border-right:1px solid #C0D8C0;">進捗</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;border-right:1px solid #C0D8C0;">判定</div>
+    <div style="padding:4px 6px;font-size:11px;font-weight:700;color:#0A5020;text-align:right;">備考</div>
+  </div>
+
+  ${[
+    {label:'パイプライン (億円)',q1:'2.4',q2:'2.8',q3:'3.2',diff:'+14.3%',diffOk:true,target:'3.8',rate:'84%',rateW:84,bar:'#1D6F42',judge:'●',judgeColor:'#BA7517',note:'順調に増加'},
+    {label:'新規商談数 (件)',q1:'48',q2:'54',q3:'62',diff:'+14.8%',diffOk:true,target:'70',rate:'89%',rateW:89,bar:'#1D6F42',judge:'◎',judgeColor:'#1D6F42',note:'目標ペース超'},
+    {label:'コンバージョン率',q1:'21%',q2:'24%',q3:'32%',diff:'+8.0pp',diffOk:true,target:'35%',rate:'91%',rateW:91,bar:'#1D6F42',judge:'◎',judgeColor:'#1D6F42',note:'大幅改善'},
+    {label:'ARR成長率 (年率)',q1:'24%',q2:'28%',q3:'32%',diff:'+4.0pp',diffOk:true,target:'35%',rate:'91%',rateW:91,bar:'#1D6F42',judge:'◎',judgeColor:'#1D6F42',note:'SaaS牽引'},
+    {label:'チャーンレート (月次)',q1:'1.0%',q2:'1.2%',q3:'1.6%',diff:'+0.4pp',diffOk:false,target:'≤1.5%',rate:'94%',rateW:94,bar:'#B7472A',judge:'▲',judgeColor:'#B7472A',note:'⚠ 要対策'},
+    {label:'NRR',q1:'102%',q2:'104%',q3:'107%',diff:'+3.0pp',diffOk:true,target:'110%+',rate:'97%',rateW:97,bar:'#1D6F42',judge:'●',judgeColor:'#BA7517',note:'もう少し'},
+    {label:'LTV/CAC比',q1:'2.8',q2:'3.2',q3:'3.5',diff:'+0.3',diffOk:true,target:'4.0+',rate:'88%',rateW:88,bar:'#1D6F42',judge:'●',judgeColor:'#BA7517',note:'改善継続中'},
+    {label:'平均受注額 (万円)',q1:'420',q2:'510',q3:'580',diff:'+13.7%',diffOk:true,target:'650',rate:'89%',rateW:89,bar:'#1D6F42',judge:'●',judgeColor:'#BA7517',note:'エンプラ比率↑'},
+    {label:'営業サイクル (日)',q1:'68',q2:'61',q3:'54',diff:'-11.5%',diffOk:true,target:'≤50',rate:'93%',rateW:93,bar:'#1D6F42',judge:'●',judgeColor:'#BA7517',note:'短縮傾向'},
+    {label:'顧客満足度 (CSAT)',q1:'3.8',q2:'4.0',q3:'4.2',diff:'+0.2',diffOk:true,target:'4.5',rate:'93%',rateW:93,bar:'#1D6F42',judge:'●',judgeColor:'#BA7517',note:'着実に向上'},
+  ].map((r,i)=>`
+  <div style="display:grid;grid-template-columns:28px 160px 72px 72px 72px 72px 72px 72px 72px 80px 80px;background:${i%2===0?'#fff':'#F5FAF5'};border-bottom:1px solid #E8EDE8;">
+    <div style="font-size:10px;color:#888;text-align:center;padding:4px 0;border-right:1px solid #E0E0DC;background:#F0F0EC;">${i+4}</div>
+    <div style="padding:4px 10px;font-size:11px;color:#1a1a1a;border-right:1px solid #E8E8E4;font-weight:${r.label.includes('チャーン')?'600':'400'};color:${r.label.includes('チャーン')?'#8B2000':'#1a1a1a'};">${r.label}</div>
+    <div style="padding:4px 8px;font-size:11px;color:#444;text-align:right;border-right:1px solid #E8E8E4;">${r.q1}</div>
+    <div style="padding:4px 8px;font-size:11px;color:#444;text-align:right;border-right:1px solid #E8E8E4;">${r.q2}</div>
+    <div style="padding:4px 8px;font-size:11px;font-weight:600;color:#111;text-align:right;border-right:1px solid #E8E8E4;background:${r.label.includes('チャーン')?'#FFF0EE':'#F0FAF2'};">${r.q3}</div>
+    <div style="padding:4px 8px;font-size:11px;font-weight:500;color:${r.diffOk?'#1D6F42':'#B7472A'};text-align:right;border-right:1px solid #E8E8E4;">${r.diff}</div>
+    <div style="padding:4px 8px;font-size:11px;color:#444;text-align:right;border-right:1px solid #E8E8E4;">${r.target}</div>
+    <div style="padding:4px 8px;font-size:11px;color:#333;text-align:right;border-right:1px solid #E8E8E4;">${r.rate}</div>
+    <div style="padding:5px 8px;border-right:1px solid #E8E8E4;display:flex;align-items:center;gap:0;">
+      <div style="flex:1;height:8px;background:#E8E8E4;border-radius:2px;overflow:hidden;"><div style="height:100%;width:${r.rateW}%;background:${r.bar};border-radius:2px;"></div></div>
+    </div>
+    <div style="padding:4px 6px;font-size:12px;font-weight:700;color:${r.judgeColor};text-align:center;border-right:1px solid #E8E8E4;">${r.judge}</div>
+    <div style="padding:4px 6px;font-size:10px;color:#666;">${r.note}</div>
+  </div>`).join('')}
+
+  <!-- Spacer -->
+  <div style="height:20px;background:#fff;border-bottom:1px solid #EAEAE6;display:grid;grid-template-columns:28px 1fr;">
+    <div style="background:#F0F0EC;border-right:1px solid #E0E0DC;font-size:10px;color:#888;text-align:center;padding:3px 0;">14</div>
+    <div></div>
+  </div>
+
+  <!-- Chart section header -->
+  <div style="display:grid;grid-template-columns:28px 1fr;background:#fff;border-bottom:1px solid #D6EDD6;">
+    <div style="font-size:10px;color:#888;text-align:center;padding:4px 0;border-right:1px solid #E0E0DC;background:#F0F0EC;">15</div>
+    <div style="padding:6px 10px;font-size:12px;font-weight:700;color:#0A5020;">■ グラフ：Q1〜Q3 主要KPI推移（埋め込みチャート）</div>
+  </div>
+
+  <!-- Charts row -->
+  <div style="display:grid;grid-template-columns:28px 1fr;background:#fff;">
+    <div style="background:#F0F0EC;border-right:1px solid #E0E0DC;display:flex;flex-direction:column;align-items:center;padding-top:4px;font-size:10px;color:#888;gap:1px;">
+      <span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span>
+    </div>
+    <div style="padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <!-- Chart 1: Pipeline bar -->
+      <div style="border:1px solid #D0D0CC;border-radius:4px;overflow:hidden;background:#fff;">
+        <div style="background:#1D6F42;padding:6px 10px;font-size:11px;font-weight:600;color:#fff;">パイプライン推移 (億円)</div>
+        <div style="padding:12px;display:flex;align-items:flex-end;gap:10px;height:130px;">
+          ${[{q:'Q1',v:2.4,max:3.8},{q:'Q2',v:2.8,max:3.8},{q:'Q3',v:3.2,max:3.8},{q:'目標',v:3.8,max:3.8}].map(b=>`
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;">
+            <div style="font-size:10px;font-weight:600;color:#1D6F42;">${b.v}</div>
+            <div style="flex:1;width:100%;display:flex;align-items:flex-end;">
+              <div style="width:100%;height:${Math.round(b.v/b.max*100)}%;background:${b.q==='目標'?'repeating-linear-gradient(45deg,#9FE1CB,#9FE1CB 3px,#fff 3px,#fff 6px)':'#1D6F42'};border-radius:3px 3px 0 0;border:${b.q==='目標'?'1.5px dashed #1D6F42':'none'};"></div>
+            </div>
+            <div style="font-size:10px;color:#666;">${b.q}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <!-- Chart 2: Line chart NRR/Churn -->
+      <div style="border:1px solid #D0D0CC;border-radius:4px;overflow:hidden;background:#fff;">
+        <div style="background:#2B5797;padding:6px 10px;font-size:11px;font-weight:600;color:#fff;">NRR vs チャーンレート推移</div>
+        <div style="padding:12px;">
+          <svg width="100%" height="110" viewBox="0 0 280 110" style="overflow:visible;">
+            <!-- Grid -->
+            <line x1="30" y1="10" x2="270" y2="10" stroke="#eee" stroke-width="1"/>
+            <line x1="30" y1="35" x2="270" y2="35" stroke="#eee" stroke-width="1"/>
+            <line x1="30" y1="60" x2="270" y2="60" stroke="#eee" stroke-width="1"/>
+            <line x1="30" y1="85" x2="270" y2="85" stroke="#eee" stroke-width="1"/>
+            <!-- Y axis labels -->
+            <text x="0" y="14" font-size="9" fill="#888">NRR</text>
+            <text x="0" y="63" font-size="9" fill="#888">104</text>
+            <text x="0" y="89" font-size="9" fill="#888">102</text>
+            <!-- NRR line: Q1=102,Q2=104,Q3=107 mapped to y -->
+            <polyline points="60,85 155,60 250,28" fill="none" stroke="#2B5797" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="60" cy="85" r="4" fill="#2B5797"/>
+            <circle cx="155" cy="60" r="4" fill="#2B5797"/>
+            <circle cx="250" cy="28" r="4" fill="#2B5797"/>
+            <text x="56" y="98" font-size="9" fill="#2B5797" text-anchor="middle">102%</text>
+            <text x="151" y="74" font-size="9" fill="#2B5797" text-anchor="middle">104%</text>
+            <text x="246" y="22" font-size="9" fill="#2B5797" text-anchor="middle">107%</text>
+            <!-- Churn line: Q1=1.0,Q2=1.2,Q3=1.6 (secondary axis, mapped inverted) -->
+            <polyline points="60,78 155,68 250,40" fill="none" stroke="#B7472A" stroke-width="2" stroke-dasharray="5,3" stroke-linejoin="round"/>
+            <circle cx="60" cy="78" r="3.5" fill="#B7472A"/>
+            <circle cx="155" cy="68" r="3.5" fill="#B7472A"/>
+            <circle cx="250" cy="40" r="3.5" fill="#B7472A"/>
+            <text x="56" y="92" font-size="8.5" fill="#B7472A" text-anchor="middle">1.0%</text>
+            <text x="151" y="82" font-size="8.5" fill="#B7472A" text-anchor="middle">1.2%</text>
+            <text x="246" y="54" font-size="8.5" fill="#B7472A" text-anchor="middle">1.6%⚠</text>
+            <!-- X axis -->
+            <line x1="30" y1="96" x2="270" y2="96" stroke="#ccc" stroke-width="1"/>
+            <text x="60" y="107" font-size="9" fill="#666" text-anchor="middle">Q1</text>
+            <text x="155" y="107" font-size="9" fill="#666" text-anchor="middle">Q2</text>
+            <text x="250" y="107" font-size="9" fill="#666" text-anchor="middle">Q3</text>
+            <!-- Legend -->
+            <rect x="30" y="0" width="10" height="3" fill="#2B5797" rx="1"/>
+            <text x="44" y="4" font-size="8.5" fill="#2B5797">NRR</text>
+            <line x1="78" y1="1.5" x2="88" y2="1.5" stroke="#B7472A" stroke-width="2" stroke-dasharray="4,2"/>
+            <text x="92" y="4" font-size="8.5" fill="#B7472A">チャーン率</text>
+          </svg>
+        </div>
+      </div>
+      <!-- Chart 3: Conversion funnel -->
+      <div style="border:1px solid #D0D0CC;border-radius:4px;overflow:hidden;background:#fff;">
+        <div style="background:#854F0B;padding:6px 10px;font-size:11px;font-weight:600;color:#fff;">商談ファネル (Q3)</div>
+        <div style="padding:10px 12px;display:flex;flex-direction:column;gap:4px;">
+          ${[
+            {label:'リード獲得',v:310,max:310,color:'#B5D4F4',textColor:'#0C447C'},
+            {label:'初回商談',v:186,max:310,color:'#85B7EB',textColor:'#0C447C'},
+            {label:'提案フェーズ',v:108,max:310,color:'#378ADD',textColor:'#fff'},
+            {label:'最終交渉',v:72,max:310,color:'#185FA5',textColor:'#fff'},
+            {label:'受注',v:62,max:310,color:'#0C447C',textColor:'#fff'},
+          ].map(f=>`
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="font-size:10px;color:#555;width:70px;flex-shrink:0;">${f.label}</div>
+            <div style="flex:1;height:16px;background:#F0F0EC;border-radius:2px;overflow:hidden;">
+              <div style="height:100%;width:${Math.round(f.v/f.max*100)}%;background:${f.color};border-radius:2px;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;">
+                <span style="font-size:9px;font-weight:600;color:${f.textColor};">${f.v}</span>
+              </div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <!-- Chart 4: ARR growth grouped bar -->
+      <div style="border:1px solid #D0D0CC;border-radius:4px;overflow:hidden;background:#fff;">
+        <div style="background:#633806;padding:6px 10px;font-size:11px;font-weight:600;color:#fff;">ARR 内訳推移 (百万円)</div>
+        <div style="padding:12px;display:flex;align-items:flex-end;gap:6px;height:130px;">
+          ${[
+            {q:'Q1',new:120,expand:80,total:200},
+            {q:'Q2',new:145,expand:95,total:240},
+            {q:'Q3',new:168,expand:112,total:280},
+            {q:'Q4\n目標',new:185,expand:130,total:315},
+          ].map(b=>`
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;">
+            <div style="font-size:9px;font-weight:600;color:#333;">${b.total}</div>
+            <div style="flex:1;width:100%;display:flex;align-items:flex-end;gap:2px;">
+              <div style="flex:1;height:${Math.round(b.new/315*90)}%;background:${b.q.includes('目標')?'repeating-linear-gradient(45deg,#FAC775,#FAC775 3px,#fff 3px,#fff 6px)':'#BA7517'};border-radius:2px 2px 0 0;border:${b.q.includes('目標')?'1.5px dashed #BA7517':'none'};"></div>
+              <div style="flex:1;height:${Math.round(b.expand/315*90)}%;background:${b.q.includes('目標')?'repeating-linear-gradient(45deg,#9FE1CB,#9FE1CB 3px,#fff 3px,#fff 6px)':'#1D6F42'};border-radius:2px 2px 0 0;border:${b.q.includes('目標')?'1.5px dashed #1D6F42':'none'};"></div>
+            </div>
+            <div style="font-size:9px;color:#666;text-align:center;line-height:1.2;">${b.q}</div>
+          </div>`).join('')}
+          <div style="display:flex;flex-direction:column;gap:4px;justify-content:flex-end;padding-bottom:18px;margin-left:4px;">
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:#BA7517;border-radius:1px;"></div><span style="font-size:9px;color:#555;">新規ARR</span></div>
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:#1D6F42;border-radius:1px;"></div><span style="font-size:9px;color:#555;">拡張ARR</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 30: blank -->
+  <div style="height:8px;background:#fff;border-bottom:1px solid #EAEAE6;display:grid;grid-template-columns:28px 1fr;">
+    <div style="background:#F0F0EC;border-right:1px solid #E0E0DC;"></div><div></div>
+  </div>
+
+  <!-- Action items section -->
+  <div style="display:grid;grid-template-columns:28px 1fr;background:#fff;border-bottom:1px solid #D6EDD6;">
+    <div style="font-size:10px;color:#888;text-align:center;padding:4px 0;border-right:1px solid #E0E0DC;background:#F0F0EC;">31</div>
+    <div style="padding:6px 10px;font-size:12px;font-weight:700;color:#0A5020;">■ アクションアイテム管理</div>
+  </div>
+
+  <!-- Action header -->
+  <div style="display:grid;grid-template-columns:28px 40px 200px 160px 80px 80px 100px 1fr;background:#D6EDD6;border-bottom:1px solid #B8D8B8;">
+    <div style="font-size:10px;color:#888;text-align:center;padding:4px 0;border-right:1px solid #C0D8C0;background:#C8E4C8;">32</div>
+    ${['#','タスク','詳細','担当者','期限','優先度','ステータス','備考'].map(h=>`<div style="padding:4px 8px;font-size:11px;font-weight:700;color:#0A5020;border-right:1px solid #C0D8C0;">${h}</div>`).join('')}
+  </div>
+
+  ${[
+    {n:1,task:'オンボーディング改善施策の立案',detail:'チャーン低減のため体験フロー全面見直し',owner:'田中課長',due:'2025/01/31',pri:'高',priColor:'#B7472A',status:'進行中',statusBg:'#FFF0CC',note:'CS部門と合同WS予定'},
+    {n:2,task:'ヘルススコアダッシュボード構築',detail:'リスク顧客の自動検知機能の実装',owner:'山田担当',due:'2025/03/31',pri:'高',priColor:'#B7472A',status:'未着手',statusBg:'#FFE8E8',note:'エンジニアチームとの調整要'},
+    {n:3,task:'来期OKR文書化・全社配布',detail:'NRR110%達成戦略の文書化と浸透施策',owner:'鈴木部長',due:'2025/01/20',pri:'中',priColor:'#BA7517',status:'完了',statusBg:'#E8F4EE',note:'✓ 1/18配布済み'},
+    {n:4,task:'デジタルマーケティング予算再配分',detail:'コンテンツSEO・リターゲティングへ30%増配',owner:'佐藤部長',due:'2025/02/15',pri:'中',priColor:'#BA7517',status:'承認待',statusBg:'#EEF0FF',note:'CFO承認後実施'},
+    {n:5,task:'エンタープライズ新規開拓 5社',detail:'ターゲットリスト確定と初回アプローチ',owner:'田中課長',due:'2025/03/31',pri:'低',priColor:'#1D6F42',status:'計画中',statusBg:'#F0F0EE',note:'パートナー経由も検討'},
+  ].map((a,i)=>`
+  <div style="display:grid;grid-template-columns:28px 40px 200px 160px 80px 80px 100px 1fr;background:${i%2===0?'#fff':'#F5FAF5'};border-bottom:1px solid #E8EDE8;">
+    <div style="font-size:10px;color:#888;text-align:center;padding:5px 0;border-right:1px solid #E0E0DC;background:#F0F0EC;">${32+i+1}</div>
+    <div style="padding:5px 8px;font-size:11px;color:#555;text-align:center;border-right:1px solid #E8E8E4;">${a.n}</div>
+    <div style="padding:5px 8px;font-size:11px;font-weight:500;color:#111;border-right:1px solid #E8E8E4;">${a.task}</div>
+    <div style="padding:5px 8px;font-size:10px;color:#555;border-right:1px solid #E8E8E4;">${a.detail}</div>
+    <div style="padding:5px 8px;font-size:11px;color:#333;border-right:1px solid #E8E8E4;">${a.owner}</div>
+    <div style="padding:5px 8px;font-size:11px;color:#333;border-right:1px solid #E8E8E4;font-family:monospace;">${a.due}</div>
+    <div style="padding:5px 8px;font-size:11px;font-weight:600;color:${a.priColor};border-right:1px solid #E8E8E4;">${a.pri}</div>
+    <div style="padding:5px 8px;border-right:1px solid #E8E8E4;display:flex;align-items:center;">
+      <span style="font-size:10px;font-weight:500;padding:2px 8px;border-radius:3px;background:${a.statusBg};">${a.status}</span>
+    </div>
+    <div style="padding:5px 8px;font-size:10px;color:#666;">${a.note}</div>
+  </div>`).join('')}
+
+</div>`;
+
   } else {
     dc.style.fontFamily='sans-serif';
     dc.style.padding='12px';
