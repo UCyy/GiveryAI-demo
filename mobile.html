@@ -240,7 +240,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;background
 .oc-act.primary{background:var(--b400);color:#fff;border-color:var(--b400);}
 
 /* doc generate section */
-.doc-gen-scroll{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch;}
+.doc-gen-scroll{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:10px;}
 .doc-gen-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding:0 2px;}
 .doc-fmt-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
 .doc-fmt-card{
@@ -553,6 +553,79 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;background
 .toast.tp{background:var(--ppt);}
 .toast-close{margin-left:auto;cursor:pointer;opacity:.6;background:none;border:none;color:#fff;font-size:16px;line-height:1;}
 
+/* ── OFFICE PREVIEW (mobile) ── */
+.office-preview-wrap{
+  background:#fff;border-radius:14px;border:1px solid var(--bdr);
+  overflow:hidden;margin-top:10px;
+}
+.opr-tabs{
+  display:flex;background:#F0F0EC;border-bottom:1px solid var(--bdr);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.opr-tabs::-webkit-scrollbar{display:none;}
+.opr-tab{
+  flex-shrink:0;padding:8px 14px;font-size:11px;color:var(--text3);
+  border:none;background:transparent;cursor:pointer;
+  border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;
+  transition:all .12s;white-space:nowrap;
+}
+.opr-tab.active{color:var(--text1);font-weight:500;border-bottom-color:var(--g900);}
+.opr-tab.active.ew{border-bottom-color:var(--word);color:var(--word);}
+.opr-tab.active.ee{border-bottom-color:var(--excel);color:var(--excel);}
+.opr-tab.active.ep{border-bottom-color:var(--ppt);color:var(--ppt);}
+.opr-content{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.opr-ribbon{
+  display:flex;align-items:center;gap:3px;padding:4px 10px;
+  border-bottom:1px solid var(--bdr);background:#fff;overflow-x:auto;
+}
+.opr-ribbon::-webkit-scrollbar{display:none;}
+.opr-app-name{font-size:10px;font-weight:700;margin-right:6px;flex-shrink:0;}
+.opr-rb{font-size:10px;padding:2px 7px;border:none;background:none;cursor:pointer;border-radius:3px;color:var(--text2);font-family:'DM Sans',sans-serif;flex-shrink:0;}
+.opr-rb:hover{background:var(--surf2);}
+.opr-save{margin-left:auto;font-size:9px;color:var(--t600);white-space:nowrap;flex-shrink:0;}
+
+/* word canvas */
+.word-canvas{background:#E0E0DD;padding:12px;min-height:400px;}
+.word-page{background:#fff;padding:28px 28px;box-shadow:0 2px 8px rgba(0,0,0,.12);font-family:'Times New Roman',serif;font-size:12px;line-height:1.8;color:#111;}
+/* excel canvas */
+.xl-canvas{background:#E8E8E5;padding:0;}
+.xl-canvas-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.xl-sheet-tabs{display:flex;align-items:flex-end;gap:1px;padding:4px 8px 0;background:#D0D0CC;border-bottom:2px solid var(--excel);}
+.xl-tab{padding:4px 10px;background:#fff;font-size:10px;font-weight:600;color:var(--excel);border-radius:3px 3px 0 0;}
+.xl-tab-i{padding:4px 10px;background:#E0E0DC;font-size:10px;color:#888;border-radius:3px 3px 0 0;cursor:pointer;}
+.xl-col-hdr{display:flex;background:#E8E8E5;border-bottom:1px solid #C8C8C4;}
+.xl-ch{font-size:9px;color:#444;text-align:center;padding:2px 3px;border-right:1px solid #C8C8C4;flex-shrink:0;}
+.xl-row{display:flex;border-bottom:1px solid #E0E0DC;}
+.xl-rn{font-size:9px;color:#888;text-align:center;padding:3px 2px;border-right:1px solid #E0E0DC;background:#F0F0EC;flex-shrink:0;width:22px;}
+.xl-cell{font-size:10px;padding:3px 6px;border-right:1px solid #E8E8E4;flex-shrink:0;white-space:nowrap;}
+.xl-hdr{background:#1D6F42;color:#fff;font-weight:600;}
+.xl-alt{background:#F5FAF5;}
+.xl-hi{background:#F0FAF2;font-weight:600;}
+.xl-warn{background:#FFF0EE;color:#8B2000;font-weight:600;}
+/* ppt canvas */
+.ppt-canvas{background:#3E3E3E;padding:10px;}
+.ppt-slide{background:#fff;border-radius:3px;margin-bottom:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.2);}
+.ppt-slide-hdr{background:#444;padding:3px 8px;font-size:8px;color:#bbb;display:flex;gap:4px;}
+.ppt-slide-body{height:150px;overflow:hidden;}
+/* office preview wrapper */
+.office-preview-wrap{
+  background:var(--surf);border-radius:14px;border:1px solid var(--bdr);
+  overflow:hidden;margin-top:0;
+}
+.opr-preview-label{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;
+  border-bottom:1px solid var(--bdr);background:var(--surf2);
+}
+.opr-preview-label-txt{font-size:11px;font-weight:500;color:var(--text2);}
+.opr-preview-badge{
+  font-size:9px;padding:2px 7px;border-radius:4px;
+  background:var(--t50);color:var(--t600);font-weight:500;
+}
+.opr-scroll-hint{
+  font-size:10px;color:var(--text3);margin-left:auto;
+  display:flex;align-items:center;gap:3px;
+}
+
 /* ── UTIL ── */
 .hidden{display:none!important;}
 ::-webkit-scrollbar{width:3px;}
@@ -779,8 +852,27 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;background
 
 <!-- ▸ SCREEN: ADMIN -->
 <div class="screen" id="scrAdmin">
-  <div class="screen-header" style="padding:12px 14px 0;">
-    <div class="sh-top" style="margin-bottom:10px;"><div class="sh-title">管理者画面</div></div>
+  <!-- Admin console header -->
+  <div style="
+    display:flex;align-items:center;gap:10px;padding:0 14px;height:48px;flex-shrink:0;
+    background:linear-gradient(90deg,#1A2332 0%,#243040 100%);
+    border-bottom:2px solid var(--brand);
+  ">
+    <div style="display:flex;align-items:center;gap:7px;">
+      <div style="width:22px;height:22px;border-radius:6px;background:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.8"><circle cx="6" cy="4" r="2.2"/><path d="M2 11C2 8.8 3.8 7 6 7s4 1.8 4 4"/><circle cx="10" cy="5" r="1.5"/></svg>
+      </div>
+      <span style="font-size:14px;font-weight:600;color:#fff;letter-spacing:.01em;">管理者コンソール</span>
+    </div>
+    <div style="
+      font-size:9px;font-weight:600;padding:2px 8px;border-radius:4px;
+      background:rgba(198,0,0,.3);color:#ffaaaa;border:1px solid rgba(198,0,0,.5);
+      letter-spacing:.06em;
+    ">ADMIN ONLY</div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:10px;color:rgba(255,255,255,.35);">鈴木 一郎（管理者）</span>
+      <div style="width:26px;height:26px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0;">鈴</div>
+    </div>
   </div>
   <div class="admin-seg" id="adminSeg">
     <button class="as-btn active" onclick="setAdminTab('approval',this)">承認管理 <span class="cnt">4</span></button>
@@ -1104,6 +1196,194 @@ function finishGen(loc,cfg){
   document.getElementById('dpcMeta').textContent=loc+'に保存済 · 自動保存中';
   document.getElementById('dpcOpenBtn').style.background=cfg.bg;
   toast(cfg.name+' を '+loc+' に保存しました',{word:'tw',excel:'te',ppt:'tp'}[currentDocFmt],'✓');
+  // render preview
+  renderDocPreview(currentDocFmt);
+  // auto-scroll to preview after short delay
+  setTimeout(()=>{
+    const block=document.getElementById('officePreviewBlock');
+    if(block)block.scrollIntoView({behavior:'smooth',block:'start'});
+  },300);
+}
+
+function renderDocPreview(f){
+  // remove existing preview
+  const old=document.getElementById('officePreviewBlock');
+  if(old)old.remove();
+  const container=document.getElementById('docPreviewCard').parentNode;
+  const wrap=document.createElement('div');
+  wrap.id='officePreviewBlock';
+  wrap.className='office-preview-wrap';
+
+  const appName={word:'Word',excel:'Excel',ppt:'PowerPoint'}[f];
+  const appColor={word:'#2B5797',excel:'#1D6F42',ppt:'#B7472A'}[f];
+  const tabCls={word:'ew',excel:'ee',ppt:'ep'}[f];
+  const isScrollable = f==='excel';
+
+  // preview section label + ribbon
+  wrap.innerHTML=`
+    <div class="opr-preview-label">
+      <div style="width:18px;height:18px;border-radius:4px;background:${appColor};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        ${{word:'<svg width="10" height="10" viewBox="0 0 12 12" fill="white"><path d="M2 1h7l3 3v7H2V1z" stroke="white" stroke-width=".5"/><path d="M9 1v3h3" stroke="rgba(255,255,255,.6)" stroke-width=".8" fill="none"/></svg>',excel:'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.2"><rect x="1" y="1" width="10" height="10" rx="1"/><path d="M1 5h10M1 8h10M5 1v10"/></svg>',ppt:'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.2"><rect x="1" y="1" width="10" height="8.5" rx="1"/><path d="M4 9.5v2M8 9.5v2M3 11.5h6"/></svg>'}[f]}
+      </div>
+      <span class="opr-preview-label-txt">${appName} プレビュー</span>
+      <span class="opr-preview-badge">Microsoft 365 同期済</span>
+      ${isScrollable?'<span class="opr-scroll-hint">← 横スクロール →</span>':''}
+    </div>
+    <div class="opr-ribbon">
+      <span class="opr-app-name" style="color:${appColor};">${appName}</span>
+      <button class="opr-rb">ファイル</button>
+      <button class="opr-rb">ホーム</button>
+      <button class="opr-rb">挿入</button>
+      <button class="opr-rb">表示</button>
+      <span class="opr-save">● 自動保存中</span>
+      <div style="width:20px;height:20px;border-radius:50%;background:var(--b600);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:#fff;margin-left:6px;flex-shrink:0;">田中</div>
+    </div>
+    <div id="oprBody"></div>`;
+  container.appendChild(wrap);
+
+  const body=wrap.querySelector('#oprBody');
+
+  if(f==='word'){
+    body.innerHTML=`<div class="word-canvas"><div class="word-page">
+      <div style="text-align:center;margin-bottom:18px;">
+        <div style="font-size:8px;color:#aaa;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">社外秘 · Givery AI VoiceIQ Enterprise</div>
+        <div style="font-size:17px;font-weight:700;font-family:sans-serif;margin-bottom:4px;">Q3 戦略会議 議事録</div>
+        <div style="font-size:10px;color:#666;">2025年1月15日（水）14:00〜15:24 | 営業部</div>
+      </div>
+      <table style="width:100%;font-size:10px;border-collapse:collapse;margin-bottom:14px;">
+        <tr><td style="padding:3px 7px;border:1px solid #ddd;background:#f5f5f5;font-weight:600;width:24%;">参加者</td><td style="padding:3px 7px;border:1px solid #ddd;">鈴木部長、田中課長、佐藤部長、山田担当</td></tr>
+        <tr><td style="padding:3px 7px;border:1px solid #ddd;background:#f5f5f5;font-weight:600;">議題</td><td style="padding:3px 7px;border:1px solid #ddd;">Q3戦略レビュー / 来期KPI設定</td></tr>
+      </table>
+      <div style="font-size:12px;font-weight:700;color:#2B5797;border-bottom:2px solid #2B5797;padding-bottom:3px;margin-bottom:8px;font-family:sans-serif;">1. 現状報告</div>
+      <ul style="font-size:11px;padding-left:14px;margin-bottom:12px;line-height:1.9;">
+        <li>パイプライン：<strong>3.2億円</strong>（エンタープライズ70%）</li>
+        <li>コンバージョンレート：前四半期比<strong>+8%</strong></li>
+        <li>ARR成長率：年率<strong>32%</strong></li>
+        <li style="color:#8B2000;">チャーンレートが若干上昇 → 要注意</li>
+      </ul>
+      <div style="font-size:12px;font-weight:700;color:#2B5797;border-bottom:2px solid #2B5797;padding-bottom:3px;margin-bottom:8px;font-family:sans-serif;">2. 決定事項</div>
+      <ul style="font-size:11px;padding-left:14px;margin-bottom:12px;line-height:1.9;">
+        <li>来期OKR：<strong>NRR 110%以上</strong></li>
+        <li>LTV/CAC比の改善を重要指標に追加</li>
+      </ul>
+      <div style="font-size:12px;font-weight:700;color:#2B5797;border-bottom:2px solid #2B5797;padding-bottom:3px;margin-bottom:8px;font-family:sans-serif;">3. アクションアイテム</div>
+      <table style="width:100%;font-size:10px;border-collapse:collapse;">
+        <tr style="background:#EEF4FB;"><th style="padding:4px 7px;border:1px solid #ccc;text-align:left;">アクション</th><th style="padding:4px 7px;border:1px solid #ccc;">担当</th><th style="padding:4px 7px;border:1px solid #ccc;">期限</th></tr>
+        <tr><td style="padding:3px 7px;border:1px solid #ddd;">オンボーディング改善施策の立案</td><td style="padding:3px 7px;border:1px solid #ddd;text-align:center;">田中課長</td><td style="padding:3px 7px;border:1px solid #ddd;text-align:center;">1/31</td></tr>
+        <tr style="background:#fafafa;"><td style="padding:3px 7px;border:1px solid #ddd;">ヘルススコアダッシュボード構築</td><td style="padding:3px 7px;border:1px solid #ddd;text-align:center;">山田担当</td><td style="padding:3px 7px;border:1px solid #ddd;text-align:center;">Q4末</td></tr>
+        <tr><td style="padding:3px 7px;border:1px solid #ddd;">来期OKR文書化・全社配布</td><td style="padding:3px 7px;border:1px solid #ddd;text-align:center;">鈴木部長</td><td style="padding:3px 7px;border:1px solid #ddd;text-align:center;">1/20</td></tr>
+      </table>
+    </div></div>`;
+
+  } else if(f==='excel'){
+    body.innerHTML=`<div class="xl-canvas">
+      <div class="xl-sheet-tabs">
+        <div class="xl-tab">KPI サマリー</div>
+        <div class="xl-tab-i">月次推移</div>
+        <div class="xl-tab-i">アクション管理</div>
+        <div class="xl-tab-i">+</div>
+      </div>
+      <div class="xl-canvas-scroll">
+        <!-- col headers -->
+        <div class="xl-col-hdr" style="min-width:640px;">
+          <div class="xl-ch" style="width:22px;"> </div>
+          ${['A','B','C','D','E','F','G','H','I'].map(c=>`<div class="xl-ch" style="width:${c==='A'?130:70}px;">${c}</div>`).join('')}
+        </div>
+        <!-- title row -->
+        <div class="xl-row" style="min-width:640px;background:#fff;">
+          <div class="xl-rn">1</div>
+          <div class="xl-cell" style="width:130px;font-size:10px;font-weight:700;color:#1D6F42;grid-column:2/11;min-width:500px;">Q3 営業KPI レポート ／ 2025年1月15日 ／ Givery AI VoiceIQ 自動生成</div>
+        </div>
+        <!-- header row -->
+        <div class="xl-row xl-hdr" style="min-width:640px;">
+          <div class="xl-rn" style="background:#C8E4C8;color:#0A5020;">3</div>
+          ${['指標名','Q1実績','Q2実績','Q3実績','前期比','来期目標','達成率','判定','備考'].map((h,i)=>`<div class="xl-cell xl-hdr" style="width:${i===0?130:70}px;">${h}</div>`).join('')}
+        </div>
+        ${[
+          {l:'パイプライン (億円)',q1:'2.4',q2:'2.8',q3:'3.2',d:'+14.3%',dok:true,t:'3.8',r:'84%',j:'●',jc:'#BA7517',n:'順調'},
+          {l:'コンバージョン率',q1:'21%',q2:'24%',q3:'32%',d:'+8.0pp',dok:true,t:'35%',r:'91%',j:'◎',jc:'#1D6F42',n:'大幅改善'},
+          {l:'ARR成長率 (年率)',q1:'24%',q2:'28%',q3:'32%',d:'+4.0pp',dok:true,t:'35%',r:'91%',j:'◎',jc:'#1D6F42',n:'SaaS牽引'},
+          {l:'チャーンレート (月次)',q1:'1.0%',q2:'1.2%',q3:'1.6%',d:'+0.4pp',dok:false,t:'≤1.5%',r:'94%',j:'▲',jc:'#B7472A',n:'⚠ 要対策'},
+          {l:'NRR',q1:'102%',q2:'104%',q3:'107%',d:'+3.0pp',dok:true,t:'110%+',r:'97%',j:'●',jc:'#BA7517',n:'あと少し'},
+          {l:'LTV/CAC比',q1:'2.8',q2:'3.2',q3:'3.5',d:'+0.3',dok:true,t:'4.0+',r:'88%',j:'●',jc:'#BA7517',n:'改善継続'},
+          {l:'平均受注額 (万円)',q1:'420',q2:'510',q3:'580',d:'+13.7%',dok:true,t:'650',r:'89%',j:'●',jc:'#BA7517',n:'エンプラ↑'},
+          {l:'営業サイクル (日)',q1:'68',q2:'61',q3:'54',d:'-11.5%',dok:true,t:'≤50',r:'93%',j:'●',jc:'#BA7517',n:'短縮傾向'},
+        ].map((r,i)=>`
+        <div class="xl-row ${i%2===0?'':'xl-alt'}" style="min-width:640px;">
+          <div class="xl-rn">${i+4}</div>
+          <div class="xl-cell" style="width:130px;font-weight:${r.l.includes('チャーン')?'600':'400'};color:${r.l.includes('チャーン')?'#8B2000':'#111'};">${r.l}</div>
+          <div class="xl-cell" style="width:70px;text-align:right;">${r.q1}</div>
+          <div class="xl-cell" style="width:70px;text-align:right;">${r.q2}</div>
+          <div class="xl-cell ${r.l.includes('チャーン')?'xl-warn':'xl-hi'}" style="width:70px;text-align:right;">${r.q3}</div>
+          <div class="xl-cell" style="width:70px;text-align:right;color:${r.dok?'#1D6F42':'#B7472A'};font-weight:500;">${r.d}</div>
+          <div class="xl-cell" style="width:70px;text-align:right;">${r.t}</div>
+          <div class="xl-cell" style="width:70px;text-align:right;">${r.r}</div>
+          <div class="xl-cell" style="width:70px;text-align:center;font-weight:700;color:${r.jc};">${r.j}</div>
+          <div class="xl-cell" style="width:70px;font-size:9px;color:#666;">${r.n}</div>
+        </div>`).join('')}
+        <!-- chart header -->
+        <div class="xl-row" style="min-width:640px;background:#D6EDD6;border-top:2px solid #1D6F42;">
+          <div class="xl-rn" style="background:#C8E4C8;">13</div>
+          <div class="xl-cell" style="font-size:10px;font-weight:700;color:#0A5020;">■ グラフ：主要KPI推移</div>
+        </div>
+        <!-- inline SVG chart -->
+        <div class="xl-row" style="min-width:640px;background:#fff;">
+          <div class="xl-rn" style="height:160px;">14</div>
+          <div style="padding:10px 12px;flex:1;">
+            <svg width="580" height="140" viewBox="0 0 580 140">
+              <text x="0" y="12" font-size="9" fill="#555" font-weight="600">パイプライン推移 (億円)</text>
+              ${[{q:'Q1',v:2.4},{q:'Q2',v:2.8},{q:'Q3',v:3.2},{q:'目標',v:3.8}].map((b,i)=>`
+                <rect x="${40+i*54}" y="${115-Math.round(b.v/3.8*80)}" width="36" height="${Math.round(b.v/3.8*80)}"
+                  fill="${b.q==='目標'?'none':'#1D6F42'}" stroke="${b.q==='目標'?'#1D6F42':'none'}" stroke-width="1.5"
+                  stroke-dasharray="${b.q==='目標'?'4,2':''}" rx="2"/>
+                <text x="${58+i*54}" y="${110-Math.round(b.v/3.8*80)}" font-size="8.5" fill="#1D6F42" text-anchor="middle" font-weight="600">${b.v}</text>
+                <text x="${58+i*54}" y="128" font-size="8.5" fill="#666" text-anchor="middle">${b.q}</text>`).join('')}
+              <line x1="30" y1="115" x2="258" y2="115" stroke="#ccc" stroke-width="1"/>
+
+              <text x="290" y="12" font-size="9" fill="#555" font-weight="600">NRR vs チャーンレート推移</text>
+              <polyline points="310,95 390,75 470,45" fill="none" stroke="#2B5797" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="310" cy="95" r="4" fill="#2B5797"/>
+              <circle cx="390" cy="75" r="4" fill="#2B5797"/>
+              <circle cx="470" cy="45" r="4" fill="#2B5797"/>
+              <text x="310" y="108" font-size="8" fill="#2B5797" text-anchor="middle">102%</text>
+              <text x="390" y="88" font-size="8" fill="#2B5797" text-anchor="middle">104%</text>
+              <text x="470" y="58" font-size="8" fill="#2B5797" text-anchor="middle">107%</text>
+              <polyline points="310,88 390,82 470,60" fill="none" stroke="#B7472A" stroke-width="2" stroke-dasharray="5,3"/>
+              <circle cx="310" cy="88" r="3.5" fill="#B7472A"/>
+              <circle cx="390" cy="82" r="3.5" fill="#B7472A"/>
+              <circle cx="470" cy="60" r="3.5" fill="#B7472A"/>
+              <text x="310" y="100" font-size="8" fill="#B7472A" text-anchor="middle">1.0%</text>
+              <text x="390" y="95" font-size="8" fill="#B7472A" text-anchor="middle">1.2%</text>
+              <text x="470" y="73" font-size="8" fill="#B7472A" text-anchor="middle">1.6%⚠</text>
+              <text x="310" y="128" font-size="8" fill="#666" text-anchor="middle">Q1</text>
+              <text x="390" y="128" font-size="8" fill="#666" text-anchor="middle">Q2</text>
+              <text x="470" y="128" font-size="8" fill="#666" text-anchor="middle">Q3</text>
+              <line x1="295" y1="115" x2="490" y2="115" stroke="#ccc" stroke-width="1"/>
+              <rect x="295" y="3" width="8" height="3" fill="#2B5797" rx="1"/>
+              <text x="307" y="7" font-size="7.5" fill="#2B5797">NRR</text>
+              <line x1="330" y1="4.5" x2="338" y2="4.5" stroke="#B7472A" stroke-width="2" stroke-dasharray="4,2"/>
+              <text x="342" y="7" font-size="7.5" fill="#B7472A">チャーン</text>
+            </svg>
+          </div>
+        </div>
+      </div><!-- /xl-canvas-scroll -->
+    </div><!-- /xl-canvas -->`;
+
+  } else {
+    // PPT
+    const slides=[
+      {n:1,title:'表紙',html:`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#B7472A;color:#fff;padding:20px;text-align:center;"><div style="font-size:7px;opacity:.6;letter-spacing:.1em;margin-bottom:6px;">GIVERY AI · VOICEIQ ENTERPRISE</div><div style="font-size:16px;font-weight:700;margin-bottom:5px;">Q3 戦略会議</div><div style="font-size:10px;opacity:.8;">2025年1月15日 | 営業部</div></div>`},
+      {n:2,title:'Q3実績',html:`<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">Q3 実績サマリー</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;"><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">パイプライン</div><div style="font-size:14px;font-weight:700;">3.2億円</div><div style="font-size:7px;color:green;">+14%</div></div><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">ARR成長率</div><div style="font-size:14px;font-weight:700;">32%</div><div style="font-size:7px;color:green;">年率</div></div><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">NRR</div><div style="font-size:14px;font-weight:700;">107%</div><div style="font-size:7px;color:green;">+3pp</div></div><div style="background:#FEEDED;padding:6px;border-radius:3px;border:1px solid #f5c0b0;"><div style="font-size:7px;color:#B7472A;font-weight:600;">チャーン ⚠</div><div style="font-size:14px;font-weight:700;color:#B7472A;">1.6%</div><div style="font-size:7px;color:#B7472A;">+0.4pp</div></div></div></div>`},
+      {n:3,title:'課題と対策',html:`<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">課題と対策</div><div style="font-size:10px;"><div style="background:#FEF0ED;padding:6px 8px;border-left:3px solid #B7472A;margin-bottom:6px;border-radius:0 3px 3px 0;"><strong>課題：</strong>チャーンレート上昇（1.2%→1.6%）</div><div style="background:#E8F4EE;padding:6px 8px;border-left:3px solid #1D6F42;border-radius:0 3px 3px 0;"><strong>対策：</strong>オンボーディング改善・CS連携強化・ヘルススコア監視</div></div></div>`},
+      {n:4,title:'来期OKR',html:`<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">来期 OKR</div><div style="display:flex;flex-direction:column;gap:4px;font-size:10px;"><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>NRR目標</span><strong style="color:#1D6F42;">110%以上</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>ARR成長率</span><strong style="color:#1D6F42;">35%</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>LTV/CAC比</span><strong style="color:#1D6F42;">4.0以上</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>チャーンレート</span><strong style="color:#1D6F42;">≤1.5% / 月</strong></div></div></div>`},
+      {n:5,title:'アクション',html:`<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">アクションアイテム</div><table style="width:100%;border-collapse:collapse;font-size:9px;"><tr style="background:#B7472A;color:#fff;"><th style="padding:3px 6px;text-align:left;">タスク</th><th style="padding:3px 6px;">担当</th><th style="padding:3px 6px;">期限</th></tr><tr><td style="padding:3px 6px;border-bottom:1px solid #eee;">オンボーディング改善</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">田中課長</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">1/31</td></tr><tr style="background:#fafafa;"><td style="padding:3px 6px;border-bottom:1px solid #eee;">ヘルススコアDB</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">山田担当</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">Q4末</td></tr><tr><td style="padding:3px 6px;">OKR文書化</td><td style="padding:3px 6px;text-align:center;">鈴木部長</td><td style="padding:3px 6px;text-align:center;">1/20</td></tr></table></div>`},
+    ];
+    body.innerHTML=`<div class="ppt-canvas">${slides.map(s=>`
+      <div class="ppt-slide">
+        <div class="ppt-slide-hdr"><span>${s.n}/5</span><span>·</span><span>${s.title}</span></div>
+        <div class="ppt-slide-body">${s.html}</div>
+      </div>`).join('')}</div>`;
+  }
 }
 
 // ═══ ACTION LIST ═══
