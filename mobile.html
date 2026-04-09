@@ -28,21 +28,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;background
 /* ── SHELL ── */
 .app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;background:var(--surf2);}
 
-/* ── STATUS BAR FAKE ── */
-.status-bar{
-  height:44px;background:var(--g900);display:flex;align-items:center;
-  justify-content:space-between;padding:0 20px;flex-shrink:0;
-  /* chrome strip */
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-.status-bar::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,#666,#D0D0CE 30%,#A8A8A6 50%,#D0D0CE 70%,#666);
-}
-.status-time{font-size:13px;font-weight:500;color:#fff;}
-.status-icons{display:flex;align-items:center;gap:5px;}
-.status-icons svg{fill:#fff;opacity:.85;}
-
 /* ── TOP BAR ── */
 .topbar{
   height:50px;background:var(--g900);display:flex;align-items:center;
@@ -636,16 +621,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;background
 <body>
 <div class="app">
 
-<!-- STATUS BAR -->
-<div class="status-bar" style="position:relative;">
-  <span class="status-time">9:41</span>
-  <div class="status-icons">
-    <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="4" width="3" height="7" fill="white" opacity=".4"/><rect x="4" y="3" width="3" height="8" fill="white" opacity=".6"/><rect x="8" y="1" width="3" height="10" fill="white" opacity=".8"/><rect x="12" y="0" width="3" height="11" fill="white"/></svg>
-    <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2.5C5.5 2.5 3.3 3.5 1.7 5.2L0 3.5C2.1 1.3 5 0 8 0s5.9 1.3 8 3.5L14.3 5.2C12.7 3.5 10.5 2.5 8 2.5z" fill="white"/><path d="M8 6.5C6.5 6.5 5.2 7.1 4.2 8.2L2.5 6.5C3.9 5.1 5.9 4.3 8 4.3s4.1.8 5.5 2.2L11.8 8.2C10.8 7.1 9.5 6.5 8 6.5z" fill="white"/><circle cx="8" cy="11" r="1.5" fill="white"/></svg>
-    <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="22" height="10" rx="2" stroke="white" stroke-width="1" fill="none" opacity=".5"/><rect x="23" y="3.5" width="2" height="5" rx="1" fill="white" opacity=".4"/><rect x="1" y="2" width="17" height="8" rx="1" fill="white"/></svg>
-  </div>
-</div>
-
 <!-- TOP BAR -->
 <div class="topbar">
   <div class="topbar-logo">
@@ -683,6 +658,10 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;background
       <button class="seg-tab active" onclick="setDetailTab('ts',this)">文字起こし</button>
       <button class="seg-tab" onclick="setDetailTab('out',this)">テキスト出力</button>
       <button class="seg-tab" onclick="setDetailTab('doc',this)">ドキュメント生成</button>
+      <button class="seg-tab" id="tabPreviewBtn" onclick="setDetailTab('preview',this)" style="display:none;">
+        <span id="tabPreviewLabel">Wordプレビュー</span>
+        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--t400);margin-left:4px;vertical-align:middle;"></span>
+      </button>
       <button class="seg-tab" onclick="setDetailTab('terms',this)">用語・KB</button>
     </div>
 
@@ -819,10 +798,34 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;background
         </div>
       </div>
     </div>
+
+    <!-- preview tab — shown after doc generation -->
+    <div id="tabPreview" class="hidden" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+      <!-- top action bar -->
+      <div id="previewTopBar" style="
+        display:flex;align-items:center;gap:8px;padding:8px 12px;
+        border-bottom:1px solid var(--bdr);background:var(--surf);flex-shrink:0;
+      ">
+        <div id="previewAppIco" style="width:22px;height:22px;border-radius:5px;background:var(--word);display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+        <div style="flex:1;min-width:0;">
+          <div id="previewFileName" style="font-size:13px;font-weight:500;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+          <div id="previewSaveMeta" style="font-size:10px;color:var(--t600);display:flex;align-items:center;gap:4px;">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 5l2 2 5-5"/></svg>
+            <span id="previewSaveLabel">OneDriveに保存済</span>
+          </div>
+        </div>
+        <button id="previewOpenBtn" style="
+          padding:6px 12px;border-radius:8px;border:none;
+          font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;
+          color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0;
+        " onclick="toast('Office Onlineを開いています...','ok','↗')">Office Onlineで開く</button>
+      </div>
+      <!-- office preview body — fills remaining space -->
+      <div id="previewBody" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--surf2);"></div>
+    </div>
+
   </div>
 </div>
-
-<!-- ▸ SCREEN: DICTIONARY -->
 <div class="screen" id="scrDict">
   <div class="dict-screen-inner">
     <div class="screen-header">
@@ -1114,15 +1117,17 @@ function seekWave(e){
 // ═══ DETAIL TABS ═══
 function setDetailTab(tab,btn){
   document.querySelectorAll('.seg-tab').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  else{
-    const tabs=['ts','out','doc','terms'];
+  if(btn){
+    btn.classList.add('active');
+  } else {
+    const tabs=['ts','out','doc','preview','terms'];
     const idx=tabs.indexOf(tab);
     document.querySelectorAll('.seg-tab')[idx]?.classList.add('active');
   }
   document.getElementById('tabTs').style.display=tab==='ts'?'flex':'none';
   document.getElementById('tabOut').classList.toggle('hidden',tab!=='out');
   document.getElementById('tabDoc').classList.toggle('hidden',tab!=='doc');
+  document.getElementById('tabPreview').classList.toggle('hidden',tab!=='preview');
   document.getElementById('tabTerms').classList.toggle('hidden',tab!=='terms');
   document.getElementById('audioBar').style.display=tab==='ts'?'block':'none';
 }
@@ -1191,57 +1196,67 @@ function runGen(){
 }
 function finishGen(loc,cfg){
   document.getElementById('genOverlay').classList.add('hidden');
+  // update docPreviewCard (in doc tab)
   const pc=document.getElementById('docPreviewCard');pc.classList.remove('hidden');
   document.getElementById('dpcTitle').textContent=cfg.name;
   document.getElementById('dpcMeta').textContent=loc+'に保存済 · 自動保存中';
   document.getElementById('dpcOpenBtn').style.background=cfg.bg;
-  toast(cfg.name+' を '+loc+' に保存しました',{word:'tw',excel:'te',ppt:'tp'}[currentDocFmt],'✓');
-  // render preview
-  renderDocPreview(currentDocFmt);
-  // auto-scroll to preview after short delay
+
+  // show preview tab button with correct label
+  const previewBtn=document.getElementById('tabPreviewBtn');
+  previewBtn.style.display='';
+  document.getElementById('tabPreviewLabel').textContent=
+    {word:'Word',excel:'Excel',ppt:'PPT'}[currentDocFmt]+'プレビュー';
+
+  // fill preview top bar
+  const appIco={
+    word:'<svg width="12" height="12" viewBox="0 0 12 12" fill="white"><path d="M2 1h7l3 3v7H2V1z" stroke="white" stroke-width=".3"/><path d="M9 1v3h3M4 6h4M4 8h4" stroke="rgba(255,255,255,.6)" stroke-width=".8" fill="none"/></svg>',
+    excel:'<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.2"><rect x="1" y="1" width="10" height="10" rx="1"/><path d="M1 5h10M1 8h10M5 1v10"/></svg>',
+    ppt:'<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.2"><rect x="1" y="1" width="10" height="8.5" rx="1"/><path d="M4 9.5v2M8 9.5v2M3 11.5h6"/></svg>',
+  }[currentDocFmt];
+  document.getElementById('previewAppIco').style.background=cfg.bg;
+  document.getElementById('previewAppIco').innerHTML=appIco;
+  document.getElementById('previewFileName').textContent=cfg.name;
+  document.getElementById('previewSaveLabel').textContent=loc+'に保存済 · 自動保存中';
+  document.getElementById('previewOpenBtn').style.background=cfg.bg;
+
+  // render doc content into preview body
+  const body=document.getElementById('previewBody');
+  body.innerHTML='';
+  renderDocInto(currentDocFmt,body);
+
+  // auto-switch to preview tab
   setTimeout(()=>{
-    const block=document.getElementById('officePreviewBlock');
-    if(block)block.scrollIntoView({behavior:'smooth',block:'start'});
-  },300);
+    setDetailTab('preview', previewBtn);
+    previewBtn.scrollIntoView({behavior:'smooth',inline:'center'});
+  },200);
+
+  toast(cfg.name+' を '+loc+' に保存しました',{word:'tw',excel:'te',ppt:'tp'}[currentDocFmt],'✓');
 }
 
-function renderDocPreview(f){
-  // remove existing preview
-  const old=document.getElementById('officePreviewBlock');
-  if(old)old.remove();
-  const container=document.getElementById('docPreviewCard').parentNode;
-  const wrap=document.createElement('div');
-  wrap.id='officePreviewBlock';
-  wrap.className='office-preview-wrap';
-
-  const appName={word:'Word',excel:'Excel',ppt:'PowerPoint'}[f];
+function renderDocInto(f, container){
+  // Office ribbon
   const appColor={word:'#2B5797',excel:'#1D6F42',ppt:'#B7472A'}[f];
-  const tabCls={word:'ew',excel:'ee',ppt:'ep'}[f];
-  const isScrollable = f==='excel';
+  const appName={word:'Word',excel:'Excel',ppt:'PowerPoint'}[f];
+  const isXl=f==='excel';
 
-  // preview section label + ribbon
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;flex-direction:column;min-height:100%;';
   wrap.innerHTML=`
-    <div class="opr-preview-label">
-      <div style="width:18px;height:18px;border-radius:4px;background:${appColor};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        ${{word:'<svg width="10" height="10" viewBox="0 0 12 12" fill="white"><path d="M2 1h7l3 3v7H2V1z" stroke="white" stroke-width=".5"/><path d="M9 1v3h3" stroke="rgba(255,255,255,.6)" stroke-width=".8" fill="none"/></svg>',excel:'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.2"><rect x="1" y="1" width="10" height="10" rx="1"/><path d="M1 5h10M1 8h10M5 1v10"/></svg>',ppt:'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.2"><rect x="1" y="1" width="10" height="8.5" rx="1"/><path d="M4 9.5v2M8 9.5v2M3 11.5h6"/></svg>'}[f]}
-      </div>
-      <span class="opr-preview-label-txt">${appName} プレビュー</span>
-      <span class="opr-preview-badge">Microsoft 365 同期済</span>
-      ${isScrollable?'<span class="opr-scroll-hint">← 横スクロール →</span>':''}
-    </div>
     <div class="opr-ribbon">
       <span class="opr-app-name" style="color:${appColor};">${appName}</span>
       <button class="opr-rb">ファイル</button>
       <button class="opr-rb">ホーム</button>
       <button class="opr-rb">挿入</button>
       <button class="opr-rb">表示</button>
+      ${isXl?'<span style="font-size:9px;color:var(--text3);margin-left:4px;">← 横スクロール →</span>':''}
       <span class="opr-save">● 自動保存中</span>
       <div style="width:20px;height:20px;border-radius:50%;background:var(--b600);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:#fff;margin-left:6px;flex-shrink:0;">田中</div>
     </div>
-    <div id="oprBody"></div>`;
+    <div id="previewDocBody"></div>`;
   container.appendChild(wrap);
 
-  const body=wrap.querySelector('#oprBody');
+  const body=wrap.querySelector('#previewDocBody');
 
   if(f==='word'){
     body.innerHTML=`<div class="word-canvas"><div class="word-page">
@@ -1274,7 +1289,6 @@ function renderDocPreview(f){
         <tr><td style="padding:3px 7px;border:1px solid #ddd;">来期OKR文書化・全社配布</td><td style="padding:3px 7px;border:1px solid #ddd;text-align:center;">鈴木部長</td><td style="padding:3px 7px;border:1px solid #ddd;text-align:center;">1/20</td></tr>
       </table>
     </div></div>`;
-
   } else if(f==='excel'){
     body.innerHTML=`<div class="xl-canvas">
       <div class="xl-sheet-tabs">
@@ -1284,20 +1298,17 @@ function renderDocPreview(f){
         <div class="xl-tab-i">+</div>
       </div>
       <div class="xl-canvas-scroll">
-        <!-- col headers -->
-        <div class="xl-col-hdr" style="min-width:640px;">
+        <div class="xl-col-hdr" style="min-width:600px;">
           <div class="xl-ch" style="width:22px;"> </div>
-          ${['A','B','C','D','E','F','G','H','I'].map(c=>`<div class="xl-ch" style="width:${c==='A'?130:70}px;">${c}</div>`).join('')}
+          ${['A','B','C','D','E','F','G','H','I'].map((c,i)=>'<div class="xl-ch" style="width:'+(i===0?130:65)+'px;">'+c+'</div>').join('')}
         </div>
-        <!-- title row -->
-        <div class="xl-row" style="min-width:640px;background:#fff;">
+        <div class="xl-row" style="min-width:600px;background:#fff;">
           <div class="xl-rn">1</div>
-          <div class="xl-cell" style="width:130px;font-size:10px;font-weight:700;color:#1D6F42;grid-column:2/11;min-width:500px;">Q3 営業KPI レポート ／ 2025年1月15日 ／ Givery AI VoiceIQ 自動生成</div>
+          <div class="xl-cell" style="width:130px;font-size:10px;font-weight:700;color:#1D6F42;min-width:500px;">Q3 営業KPI レポート ／ 2025年1月15日 ／ Givery AI VoiceIQ 自動生成</div>
         </div>
-        <!-- header row -->
-        <div class="xl-row xl-hdr" style="min-width:640px;">
+        <div class="xl-row xl-hdr" style="min-width:600px;">
           <div class="xl-rn" style="background:#C8E4C8;color:#0A5020;">3</div>
-          ${['指標名','Q1実績','Q2実績','Q3実績','前期比','来期目標','達成率','判定','備考'].map((h,i)=>`<div class="xl-cell xl-hdr" style="width:${i===0?130:70}px;">${h}</div>`).join('')}
+          ${['指標名','Q1実績','Q2実績','Q3実績','前期比','来期目標','達成率','判定','備考'].map((h,i)=>'<div class="xl-cell xl-hdr" style="width:'+(i===0?130:65)+'px;">'+h+'</div>').join('')}
         </div>
         ${[
           {l:'パイプライン (億円)',q1:'2.4',q2:'2.8',q3:'3.2',d:'+14.3%',dok:true,t:'3.8',r:'84%',j:'●',jc:'#BA7517',n:'順調'},
@@ -1308,81 +1319,51 @@ function renderDocPreview(f){
           {l:'LTV/CAC比',q1:'2.8',q2:'3.2',q3:'3.5',d:'+0.3',dok:true,t:'4.0+',r:'88%',j:'●',jc:'#BA7517',n:'改善継続'},
           {l:'平均受注額 (万円)',q1:'420',q2:'510',q3:'580',d:'+13.7%',dok:true,t:'650',r:'89%',j:'●',jc:'#BA7517',n:'エンプラ↑'},
           {l:'営業サイクル (日)',q1:'68',q2:'61',q3:'54',d:'-11.5%',dok:true,t:'≤50',r:'93%',j:'●',jc:'#BA7517',n:'短縮傾向'},
-        ].map((r,i)=>`
-        <div class="xl-row ${i%2===0?'':'xl-alt'}" style="min-width:640px;">
-          <div class="xl-rn">${i+4}</div>
-          <div class="xl-cell" style="width:130px;font-weight:${r.l.includes('チャーン')?'600':'400'};color:${r.l.includes('チャーン')?'#8B2000':'#111'};">${r.l}</div>
-          <div class="xl-cell" style="width:70px;text-align:right;">${r.q1}</div>
-          <div class="xl-cell" style="width:70px;text-align:right;">${r.q2}</div>
-          <div class="xl-cell ${r.l.includes('チャーン')?'xl-warn':'xl-hi'}" style="width:70px;text-align:right;">${r.q3}</div>
-          <div class="xl-cell" style="width:70px;text-align:right;color:${r.dok?'#1D6F42':'#B7472A'};font-weight:500;">${r.d}</div>
-          <div class="xl-cell" style="width:70px;text-align:right;">${r.t}</div>
-          <div class="xl-cell" style="width:70px;text-align:right;">${r.r}</div>
-          <div class="xl-cell" style="width:70px;text-align:center;font-weight:700;color:${r.jc};">${r.j}</div>
-          <div class="xl-cell" style="width:70px;font-size:9px;color:#666;">${r.n}</div>
-        </div>`).join('')}
-        <!-- chart header -->
-        <div class="xl-row" style="min-width:640px;background:#D6EDD6;border-top:2px solid #1D6F42;">
+        ].map((r,i)=>'<div class="xl-row '+(i%2===0?'':'xl-alt')+'" style="min-width:600px;"><div class="xl-rn">'+(i+4)+'</div><div class="xl-cell" style="width:130px;font-weight:'+(r.l.includes('チャーン')?'600':'400')+';color:'+(r.l.includes('チャーン')?'#8B2000':'#111')+';"> '+r.l+'</div><div class="xl-cell" style="width:65px;text-align:right;">'+r.q1+'</div><div class="xl-cell" style="width:65px;text-align:right;">'+r.q2+'</div><div class="xl-cell '+(r.l.includes('チャーン')?'xl-warn':'xl-hi')+'" style="width:65px;text-align:right;">'+r.q3+'</div><div class="xl-cell" style="width:65px;text-align:right;color:'+(r.dok?'#1D6F42':'#B7472A')+';font-weight:500;">'+r.d+'</div><div class="xl-cell" style="width:65px;text-align:right;">'+r.t+'</div><div class="xl-cell" style="width:65px;text-align:right;">'+r.r+'</div><div class="xl-cell" style="width:65px;text-align:center;font-weight:700;color:'+r.jc+';">'+r.j+'</div><div class="xl-cell" style="width:65px;font-size:9px;color:#666;">'+r.n+'</div></div>').join('')}
+        <div class="xl-row" style="min-width:600px;background:#D6EDD6;border-top:2px solid #1D6F42;">
           <div class="xl-rn" style="background:#C8E4C8;">13</div>
           <div class="xl-cell" style="font-size:10px;font-weight:700;color:#0A5020;">■ グラフ：主要KPI推移</div>
         </div>
-        <!-- inline SVG chart -->
-        <div class="xl-row" style="min-width:640px;background:#fff;">
-          <div class="xl-rn" style="height:160px;">14</div>
-          <div style="padding:10px 12px;flex:1;">
-            <svg width="580" height="140" viewBox="0 0 580 140">
-              <text x="0" y="12" font-size="9" fill="#555" font-weight="600">パイプライン推移 (億円)</text>
-              ${[{q:'Q1',v:2.4},{q:'Q2',v:2.8},{q:'Q3',v:3.2},{q:'目標',v:3.8}].map((b,i)=>`
-                <rect x="${40+i*54}" y="${115-Math.round(b.v/3.8*80)}" width="36" height="${Math.round(b.v/3.8*80)}"
-                  fill="${b.q==='目標'?'none':'#1D6F42'}" stroke="${b.q==='目標'?'#1D6F42':'none'}" stroke-width="1.5"
-                  stroke-dasharray="${b.q==='目標'?'4,2':''}" rx="2"/>
-                <text x="${58+i*54}" y="${110-Math.round(b.v/3.8*80)}" font-size="8.5" fill="#1D6F42" text-anchor="middle" font-weight="600">${b.v}</text>
-                <text x="${58+i*54}" y="128" font-size="8.5" fill="#666" text-anchor="middle">${b.q}</text>`).join('')}
-              <line x1="30" y1="115" x2="258" y2="115" stroke="#ccc" stroke-width="1"/>
-
-              <text x="290" y="12" font-size="9" fill="#555" font-weight="600">NRR vs チャーンレート推移</text>
-              <polyline points="310,95 390,75 470,45" fill="none" stroke="#2B5797" stroke-width="2.5" stroke-linecap="round"/>
-              <circle cx="310" cy="95" r="4" fill="#2B5797"/>
-              <circle cx="390" cy="75" r="4" fill="#2B5797"/>
-              <circle cx="470" cy="45" r="4" fill="#2B5797"/>
-              <text x="310" y="108" font-size="8" fill="#2B5797" text-anchor="middle">102%</text>
-              <text x="390" y="88" font-size="8" fill="#2B5797" text-anchor="middle">104%</text>
-              <text x="470" y="58" font-size="8" fill="#2B5797" text-anchor="middle">107%</text>
-              <polyline points="310,88 390,82 470,60" fill="none" stroke="#B7472A" stroke-width="2" stroke-dasharray="5,3"/>
-              <circle cx="310" cy="88" r="3.5" fill="#B7472A"/>
-              <circle cx="390" cy="82" r="3.5" fill="#B7472A"/>
-              <circle cx="470" cy="60" r="3.5" fill="#B7472A"/>
-              <text x="310" y="100" font-size="8" fill="#B7472A" text-anchor="middle">1.0%</text>
-              <text x="390" y="95" font-size="8" fill="#B7472A" text-anchor="middle">1.2%</text>
-              <text x="470" y="73" font-size="8" fill="#B7472A" text-anchor="middle">1.6%⚠</text>
-              <text x="310" y="128" font-size="8" fill="#666" text-anchor="middle">Q1</text>
-              <text x="390" y="128" font-size="8" fill="#666" text-anchor="middle">Q2</text>
-              <text x="470" y="128" font-size="8" fill="#666" text-anchor="middle">Q3</text>
-              <line x1="295" y1="115" x2="490" y2="115" stroke="#ccc" stroke-width="1"/>
-              <rect x="295" y="3" width="8" height="3" fill="#2B5797" rx="1"/>
-              <text x="307" y="7" font-size="7.5" fill="#2B5797">NRR</text>
-              <line x1="330" y1="4.5" x2="338" y2="4.5" stroke="#B7472A" stroke-width="2" stroke-dasharray="4,2"/>
-              <text x="342" y="7" font-size="7.5" fill="#B7472A">チャーン</text>
-            </svg>
-          </div>
+        <div style="min-width:600px;background:#fff;padding:10px 12px;">
+          <svg width="570" height="140" viewBox="0 0 570 140">
+            <text x="0" y="12" font-size="9" fill="#555" font-weight="600">パイプライン推移 (億円)</text>
+            <rect x="35" y="28" width="34" height="84" fill="#1D6F42" rx="2"/><text x="52" y="23" font-size="8.5" fill="#1D6F42" text-anchor="middle" font-weight="600">2.4</text><text x="52" y="126" font-size="8.5" fill="#666" text-anchor="middle">Q1</text>
+            <rect x="87" y="16" width="34" height="96" fill="#1D6F42" rx="2"/><text x="104" y="11" font-size="8.5" fill="#1D6F42" text-anchor="middle" font-weight="600">2.8</text><text x="104" y="126" font-size="8.5" fill="#666" text-anchor="middle">Q2</text>
+            <rect x="139" y="2" width="34" height="110" fill="#1D6F42" rx="2"/><text x="156" y="-3" font-size="8.5" fill="#1D6F42" text-anchor="middle" font-weight="600">3.2</text><text x="156" y="126" font-size="8.5" fill="#666" text-anchor="middle">Q3</text>
+            <rect x="191" y="-17" width="34" height="129" fill="none" stroke="#1D6F42" stroke-width="1.5" stroke-dasharray="4,2" rx="2"/><text x="208" y="-22" font-size="8.5" fill="#1D6F42" text-anchor="middle" font-weight="600">3.8</text><text x="208" y="126" font-size="8.5" fill="#666" text-anchor="middle">目標</text>
+            <line x1="25" y1="112" x2="240" y2="112" stroke="#ccc" stroke-width="1"/>
+            <text x="280" y="12" font-size="9" fill="#555" font-weight="600">NRR vs チャーンレート推移</text>
+            <polyline points="305,95 390,72 470,42" fill="none" stroke="#2B5797" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="305" cy="95" r="4" fill="#2B5797"/><circle cx="390" cy="72" r="4" fill="#2B5797"/><circle cx="470" cy="42" r="4" fill="#2B5797"/>
+            <text x="305" y="108" font-size="8" fill="#2B5797" text-anchor="middle">102%</text>
+            <text x="390" y="85" font-size="8" fill="#2B5797" text-anchor="middle">104%</text>
+            <text x="470" y="55" font-size="8" fill="#2B5797" text-anchor="middle">107%</text>
+            <polyline points="305,88 390,80 470,58" fill="none" stroke="#B7472A" stroke-width="2" stroke-dasharray="5,3"/>
+            <circle cx="305" cy="88" r="3.5" fill="#B7472A"/><circle cx="390" cy="80" r="3.5" fill="#B7472A"/><circle cx="470" cy="58" r="3.5" fill="#B7472A"/>
+            <text x="305" y="100" font-size="8" fill="#B7472A" text-anchor="middle">1.0%</text>
+            <text x="390" y="93" font-size="8" fill="#B7472A" text-anchor="middle">1.2%</text>
+            <text x="470" y="71" font-size="8" fill="#B7472A" text-anchor="middle">1.6%⚠</text>
+            <text x="305" y="126" font-size="8" fill="#666" text-anchor="middle">Q1</text>
+            <text x="390" y="126" font-size="8" fill="#666" text-anchor="middle">Q2</text>
+            <text x="470" y="126" font-size="8" fill="#666" text-anchor="middle">Q3</text>
+            <line x1="285" y1="112" x2="490" y2="112" stroke="#ccc" stroke-width="1"/>
+            <rect x="285" y="3" width="8" height="3" fill="#2B5797" rx="1"/>
+            <text x="297" y="7" font-size="7.5" fill="#2B5797">NRR</text>
+            <line x1="318" y1="4.5" x2="328" y2="4.5" stroke="#B7472A" stroke-width="2" stroke-dasharray="4,2"/>
+            <text x="332" y="7" font-size="7.5" fill="#B7472A">チャーン率</text>
+          </svg>
         </div>
-      </div><!-- /xl-canvas-scroll -->
-    </div><!-- /xl-canvas -->`;
-
+      </div>
+    </div>`;
   } else {
-    // PPT
     const slides=[
-      {n:1,title:'表紙',html:`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#B7472A;color:#fff;padding:20px;text-align:center;"><div style="font-size:7px;opacity:.6;letter-spacing:.1em;margin-bottom:6px;">GIVERY AI · VOICEIQ ENTERPRISE</div><div style="font-size:16px;font-weight:700;margin-bottom:5px;">Q3 戦略会議</div><div style="font-size:10px;opacity:.8;">2025年1月15日 | 営業部</div></div>`},
-      {n:2,title:'Q3実績',html:`<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">Q3 実績サマリー</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;"><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">パイプライン</div><div style="font-size:14px;font-weight:700;">3.2億円</div><div style="font-size:7px;color:green;">+14%</div></div><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">ARR成長率</div><div style="font-size:14px;font-weight:700;">32%</div><div style="font-size:7px;color:green;">年率</div></div><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">NRR</div><div style="font-size:14px;font-weight:700;">107%</div><div style="font-size:7px;color:green;">+3pp</div></div><div style="background:#FEEDED;padding:6px;border-radius:3px;border:1px solid #f5c0b0;"><div style="font-size:7px;color:#B7472A;font-weight:600;">チャーン ⚠</div><div style="font-size:14px;font-weight:700;color:#B7472A;">1.6%</div><div style="font-size:7px;color:#B7472A;">+0.4pp</div></div></div></div>`},
-      {n:3,title:'課題と対策',html:`<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">課題と対策</div><div style="font-size:10px;"><div style="background:#FEF0ED;padding:6px 8px;border-left:3px solid #B7472A;margin-bottom:6px;border-radius:0 3px 3px 0;"><strong>課題：</strong>チャーンレート上昇（1.2%→1.6%）</div><div style="background:#E8F4EE;padding:6px 8px;border-left:3px solid #1D6F42;border-radius:0 3px 3px 0;"><strong>対策：</strong>オンボーディング改善・CS連携強化・ヘルススコア監視</div></div></div>`},
-      {n:4,title:'来期OKR',html:`<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">来期 OKR</div><div style="display:flex;flex-direction:column;gap:4px;font-size:10px;"><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>NRR目標</span><strong style="color:#1D6F42;">110%以上</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>ARR成長率</span><strong style="color:#1D6F42;">35%</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>LTV/CAC比</span><strong style="color:#1D6F42;">4.0以上</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>チャーンレート</span><strong style="color:#1D6F42;">≤1.5% / 月</strong></div></div></div>`},
-      {n:5,title:'アクション',html:`<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">アクションアイテム</div><table style="width:100%;border-collapse:collapse;font-size:9px;"><tr style="background:#B7472A;color:#fff;"><th style="padding:3px 6px;text-align:left;">タスク</th><th style="padding:3px 6px;">担当</th><th style="padding:3px 6px;">期限</th></tr><tr><td style="padding:3px 6px;border-bottom:1px solid #eee;">オンボーディング改善</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">田中課長</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">1/31</td></tr><tr style="background:#fafafa;"><td style="padding:3px 6px;border-bottom:1px solid #eee;">ヘルススコアDB</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">山田担当</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">Q4末</td></tr><tr><td style="padding:3px 6px;">OKR文書化</td><td style="padding:3px 6px;text-align:center;">鈴木部長</td><td style="padding:3px 6px;text-align:center;">1/20</td></tr></table></div>`},
+      {n:1,title:'表紙',html:'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#B7472A;color:#fff;padding:20px;text-align:center;"><div style="font-size:7px;opacity:.6;letter-spacing:.1em;margin-bottom:6px;">GIVERY AI · VOICEIQ ENTERPRISE</div><div style="font-size:16px;font-weight:700;margin-bottom:5px;">Q3 戦略会議</div><div style="font-size:10px;opacity:.8;">2025年1月15日 | 営業部</div></div>'},
+      {n:2,title:'Q3実績',html:'<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">Q3 実績サマリー</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;"><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">パイプライン</div><div style="font-size:14px;font-weight:700;">3.2億円</div><div style="font-size:7px;color:green;">+14%</div></div><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">ARR成長率</div><div style="font-size:14px;font-weight:700;">32%</div><div style="font-size:7px;color:green;">年率</div></div><div style="background:#FDF0ED;padding:6px;border-radius:3px;"><div style="font-size:7px;color:#B7472A;font-weight:600;">NRR</div><div style="font-size:14px;font-weight:700;">107%</div><div style="font-size:7px;color:green;">+3pp</div></div><div style="background:#FEEDED;padding:6px;border-radius:3px;border:1px solid #f5c0b0;"><div style="font-size:7px;color:#B7472A;font-weight:600;">チャーン ⚠</div><div style="font-size:14px;font-weight:700;color:#B7472A;">1.6%</div><div style="font-size:7px;color:#B7472A;">+0.4pp</div></div></div></div>'},
+      {n:3,title:'課題と対策',html:'<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">課題と対策</div><div style="font-size:10px;"><div style="background:#FEF0ED;padding:6px 8px;border-left:3px solid #B7472A;margin-bottom:6px;border-radius:0 3px 3px 0;"><strong>課題：</strong>チャーンレート上昇（1.2%→1.6%）</div><div style="background:#E8F4EE;padding:6px 8px;border-left:3px solid #1D6F42;border-radius:0 3px 3px 0;"><strong>対策：</strong>オンボーディング改善・CS連携強化・ヘルススコア監視</div></div></div>'},
+      {n:4,title:'来期OKR',html:'<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">来期 OKR</div><div style="display:flex;flex-direction:column;gap:4px;font-size:10px;"><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>NRR目標</span><strong style="color:#1D6F42;">110%以上</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>ARR成長率</span><strong style="color:#1D6F42;">35%</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>LTV/CAC比</span><strong style="color:#1D6F42;">4.0以上</strong></div><div style="display:flex;justify-content:space-between;padding:4px 8px;background:#f5f5f5;border-radius:3px;"><span>チャーンレート</span><strong style="color:#1D6F42;">≤1.5% / 月</strong></div></div></div>'},
+      {n:5,title:'アクション',html:'<div style="padding:12px;"><div style="font-size:10px;font-weight:700;color:#B7472A;border-bottom:2px solid #B7472A;padding-bottom:3px;margin-bottom:8px;">アクションアイテム</div><table style="width:100%;border-collapse:collapse;font-size:9px;"><tr style="background:#B7472A;color:#fff;"><th style="padding:3px 6px;text-align:left;">タスク</th><th style="padding:3px 6px;">担当</th><th style="padding:3px 6px;">期限</th></tr><tr><td style="padding:3px 6px;border-bottom:1px solid #eee;">オンボーディング改善</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">田中課長</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">1/31</td></tr><tr style="background:#fafafa;"><td style="padding:3px 6px;border-bottom:1px solid #eee;">ヘルススコアDB</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">山田担当</td><td style="padding:3px 6px;border-bottom:1px solid #eee;text-align:center;">Q4末</td></tr><tr><td style="padding:3px 6px;">OKR文書化</td><td style="padding:3px 6px;text-align:center;">鈴木部長</td><td style="padding:3px 6px;text-align:center;">1/20</td></tr></table></div>'},
     ];
-    body.innerHTML=`<div class="ppt-canvas">${slides.map(s=>`
-      <div class="ppt-slide">
-        <div class="ppt-slide-hdr"><span>${s.n}/5</span><span>·</span><span>${s.title}</span></div>
-        <div class="ppt-slide-body">${s.html}</div>
-      </div>`).join('')}</div>`;
+    body.innerHTML='<div class="ppt-canvas">'+slides.map(s=>'<div class="ppt-slide"><div class="ppt-slide-hdr"><span>'+s.n+'/5</span><span>·</span><span>'+s.title+'</span></div><div class="ppt-slide-body">'+s.html+'</div></div>').join('')+'</div>';
   }
 }
 
